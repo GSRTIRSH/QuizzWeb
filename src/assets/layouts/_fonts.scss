@@ -1,0 +1,8 @@
+$font-path: "../fonts/";
+
+@font-face {
+  font-family: "Visitor Rus";
+  src: url("#{$font-path}Visitor Rus.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}

@@ -1,0 +1,23 @@
+body {
+    font-family: $base-font;
+    background: $base-violet;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+[class*="__wrapper"] {
+    padding: 0px 15px;
+    max-width: 1045px;
+    margin: 0 auto;
+}
+
+[class*="__button"] {
+    
+}
+
+.main {
+    flex: 1 1 auto;
+}
