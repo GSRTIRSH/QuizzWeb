@@ -26,6 +26,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header {
     height: 70px;
+    background-color: #4E5289;
 }
 .header__wrapper {
     height: 100%;
@@ -34,14 +35,17 @@ export default defineComponent({
     align-items: center;
 }
 .header__logo {
-    @include stroke(2px, #000000);
+    @include stroke(2px, #000);
 
+    position: relative;
+    bottom: 4px;
     font-family: $base-font;
     font-size: 40px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
     letter-spacing: 2.68px;
+    
 
     span:first-child {
         color: $base-orange;
@@ -56,8 +60,8 @@ export default defineComponent({
 
 }
 .header__button {
-    color: #FAC710;
-    font-family: Visitor_Rus;
+    font-family: $base-font;
+    background-color: $base-gray;
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
@@ -66,7 +70,6 @@ export default defineComponent({
     
     width: 140px;
     padding: 2px 0px 6px 0px;
-    background-color: $base-gray;
 
     &:first-child {
         margin-right: 25px;
