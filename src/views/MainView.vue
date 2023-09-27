@@ -10,9 +10,9 @@
                 Embark on a Quest of Coding 
                 Knowledge with Codebusters Quiz Game!
             </p>
-            <button class="main__button">
-                let’s try
-            </button>
+                <button class="main__button" @click="$router.push({name: 'Select'})">
+                    let’s try
+                </button>
         </div>
         <img src="@/assets/images/main-image.gif" alt="" class="main__image">
         </div>
@@ -23,11 +23,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    setup () {
-        
-
-        return {}
-    }
+    
 })
 </script>
 

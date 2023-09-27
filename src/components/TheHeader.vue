@@ -6,8 +6,12 @@
                 <span>BUSTERS</span>
             </span>
             <div class="header__button-container">
-                <button class="header__button">LOG IN</button>
-                <button class="header__button">SIGN IN</button>
+                <button class="header__button btn-1" @click="$router.push({name: 'Auth'})">
+                    LOG IN
+                </button>
+                <button class="header__button btn-2" @click="$router.push({name: 'Auth'})">
+                    SIGN IN
+                </button>
             </div>
         </div>
     </header>
@@ -26,7 +30,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .header {
     height: 70px;
-    background-color: #4E5289;
+    background-color: #4e5289;
 }
 .header__wrapper {
     height: 100%;
@@ -45,19 +49,17 @@ export default defineComponent({
     font-weight: 400;
     line-height: normal;
     letter-spacing: 2.68px;
-    
 
     span:first-child {
         color: $base-orange;
     }
-  
+
     span:last-child {
         color: $base-yellow;
     }
 }
 .header__button-container {
     display: flex;
-
 }
 .header__button {
     font-family: $base-font;
@@ -67,18 +69,17 @@ export default defineComponent({
     font-weight: 400;
     line-height: normal;
     letter-spacing: 0.54px;
-    
+
     width: 140px;
     padding: 2px 0px 6px 0px;
-
-    &:first-child {
-        margin-right: 25px;
-        color: $base-orange;
-        border: 2px solid $base-orange;
-    }
-    &:last-child {
-        color: $base-yellow;
-        border: 2px solid $base-yellow;
-    }
+}
+.btn-1 {
+    margin-right: 25px;
+    color: $base-orange;
+    border: 2px solid $base-orange;
+}
+.btn-2 {
+    color: $base-yellow;
+    border: 2px solid $base-yellow;
 }
 </style>

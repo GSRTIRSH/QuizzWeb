@@ -1,25 +1,30 @@
-import Main from '@/pages/Main.vue';
-import Auth from '@/pages/Auth.vue';
-import Select from '@/pages/Select.vue';
-import Quiz from '@/pages/Quiz.vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import MainView from '@/views/MainView.vue';
+import AuthView from '@/views/AuthView.vue';
+import SelectView from '@/views/SelectView.vue';
+import QuizView from '@/views/QuizView.vue';
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
     {
+        name: 'Main',
         path: '/',
-        component: Main,
+        component: MainView,
     },
     {
+        name: 'Auth',
         path: '/auth',
-        component: Auth,
+        component: AuthView,
     },
     {
+        name: 'Select',
         path: '/select',
-        component: Select,
+        component: SelectView,
     },
     {
-        path: '/quiz',
-        component: Quiz,
+        name: 'Quiz',
+        path: '/quiz/:topic/:difficulty',
+        component: QuizView,
+        props: true
     },
 ];
 
