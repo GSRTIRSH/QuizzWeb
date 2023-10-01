@@ -1,40 +1,91 @@
+<script setup lang="ts">
+import type { Question } from '@/types/types';
+import QuizLoader from '@/components/UI/QuizLoader.vue'
+import { getListOfQuizzes } from '@/api/getListOfQuizzes';
+import { useAsyncState } from '@vueuse/core';
+import { ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute()
+
+const { state: quizState, isLoading: isQuizLoading } = useAsyncState<Question[]>(
+    getListOfQuizzes(route.params.tag, route.params.difficulty), 
+    []
+);
+
+const currentQuestionIndex = ref(0);
+const selectedAnswer = ref('');
+const isAnswerChecked = ref(false)
+const correctAnswersCounter = ref(0)
+const currentQuestion = computed(() => quizState.value[currentQuestionIndex.value]);
+
+const nextQuestion = () => {
+    currentQuestionIndex.value++;
+    selectedAnswer.value = ''
+};
+
+const selectAnswer = (key:string) => {
+    if(!isAnswerChecked.value) {
+        selectedAnswer.value = key
+    }
+}
+
+const checkAnswer = () => {
+    isAnswerChecked.value = true
+    setTimeout(() => {
+        isAnswerChecked.value = false
+        nextQuestion()
+    }, 2000)
+    if (selectedAnswer.value == currentQuestion.value.correct_answer) {
+        correctAnswersCounter.value++
+    } 
+};
+</script>
+
 <template>
-    <div class="quiz">
+    <QuizLoader v-if="isQuizLoading"/>
+    <div v-if="!isQuizLoading" class="quiz">
         <div class="quiz__wrapper">
             <button class="quiz__return-btn">go back</button>
             <div class="quiz__progress-wrapper">
                 <div class="quiz__progress-bar">
-                    <div class="quiz__per"/>
+                    <div class="quiz__per" />
                 </div>
-                <div class="quiz__progress-count">1/10</div>
+                <div class="quiz__progress-count">
+                    {{ currentQuestionIndex }}/{{ quizState.length }}
+                </div>
             </div>
             <h2 class="quiz__question">
-                Inside which HTML element do we put the JavaScript?
+                {{ currentQuestion.question }}
             </h2>
             <div class="quiz__answers-container">
-                <button class="quiz__answer">some answer</button>
-                <button class="quiz__answer">some answer</button>
-                <button class="quiz__answer">some answer</button>
-                <button class="quiz__answer">some answer</button>
-                <button class="quiz__answer">some answer</button>
-                <button class="quiz__answer">some answer</button>
+                <button
+                    v-for="(answer, key) in currentQuestion.answers"
+                    :key="key"
+                    @click="selectAnswer(key)"
+                    v-show="answer !== null"
+                    class="quiz__answer"
+                    :class="{
+                    'quiz__answer_active': 
+                        key === selectedAnswer &&
+                        !isAnswerChecked,
+                    'quiz__answer_correct': 
+                        key === currentQuestion.correct_answer && 
+                        isAnswerChecked,
+                    'quiz__answer_incorrect': 
+                        key !== currentQuestion.correct_answer && 
+                        isAnswerChecked &&
+                        key === selectedAnswer
+                    }"
+                >{{ answer }}</button>
             </div>
             <div class="quiz__btn-wrapper">
-                <button>skip</button>
-                <button>submit</button>
+                <button @click="nextQuestion">skip</button>
+                <button @click="checkAnswer">submit</button>
             </div>
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import { useRoute } from 'vue-router';
-
-const route = useRoute()
-console.log(route.params.difficulty)
-
-
-</script>
 
 <style lang="scss" scoped>
 .quiz__return-btn {
@@ -60,21 +111,20 @@ console.log(route.params.difficulty)
     .quiz__progress-bar {
         height: 10px;
         width: 100%;
-        background: #514C51;
+        background: #514c51;
 
         .quiz__per {
-        height: 100%;
-        width: 10%;
-        background: $base-orange;
-        animation: progress 0.8s ease-in-out forwards;
+            height: 100%;
+            width: 10%;
+            background: $base-orange;
+            animation: progress 0.8s ease-in-out forwards;
         }
     }
-    
+
     .quiz__progress-count {
         position: relative;
         bottom: 1.5px;
         margin: 0px 5px 0px 5px;
-
 
         color: $base-yellow;
         text-align: center;
@@ -133,6 +183,18 @@ console.log(route.params.difficulty)
     letter-spacing: 2.01px;
     border: 2px solid $base-yellow;
 }
+.quiz__answer_active {
+    color: $base-orange;
+    border: 2px solid $base-orange;
+}
+.quiz__answer_correct {
+    color: green;
+    border: 2px solid green;
+}
+.quiz__answer_incorrect {
+    color: red;
+    border: 2px solid red;
+}
 .quiz__btn-wrapper {
     display: flex;
     justify-content: space-between;
@@ -142,7 +204,6 @@ console.log(route.params.difficulty)
         background: $base-gray;
         padding: 6px 0px 10px 0px;
 
-        
         text-align: center;
         font-family: $base-font;
         font-size: 26px;
@@ -151,11 +212,11 @@ console.log(route.params.difficulty)
         line-height: normal;
         letter-spacing: 1.742px;
 
-        &:first-child{
+        &:first-child {
             border: 3px solid $base-orange;
             color: $base-orange;
         }
-        &:last-child{
+        &:last-child {
             border: 3px solid $base-yellow;
             color: $base-yellow;
         }

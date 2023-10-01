@@ -48,28 +48,28 @@
             </div>
         </div>
     </div>
-    <GamePopup
+    <QuizPopup
         v-if="popupVisible"
         @difficulty-selected="handleSelectDifficulty"
     />
 </template>
 
 <script setup lang="ts">
-import GamePopup from '@/components/GamePopup.vue';
+import QuizPopup from '@/components/QuizPopup.vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const popupVisible = ref<boolean>(false);
 const options = {
-    topic: '',
+    tag: '',
     difficulty: '',
 };
 
 const popupOpen = () => (popupVisible.value = true);
 const popupClose = () => (popupVisible.value = false);
-const selectTopic = (topic: string) => {
-    options.topic = topic;
+const selectTopic = (tag: string) => {
+    options.tag = tag;
     popupOpen();
 };
 const handleSelectDifficulty = (difficulty: string) => {
