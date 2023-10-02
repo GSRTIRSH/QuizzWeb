@@ -3,23 +3,28 @@ import type { Question } from '@/types/types';
 import QuizLoader from '@/components/UI/QuizLoader.vue'
 import { getListOfQuizzes } from '@/api/getListOfQuizzes';
 import { useAsyncState } from '@vueuse/core';
-import { ref, computed } from 'vue';
+import {ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute()
 
 const { state: quizState, isLoading: isQuizLoading } = useAsyncState<Question[]>(
-    getListOfQuizzes(route.params.tag, route.params.difficulty), 
-    []
+    getListOfQuizzes(route.params.tag, route.params.difficulty), []
 );
 
 const currentQuestionIndex = ref(0);
 const selectedAnswer = ref('');
 const isAnswerChecked = ref(false)
 const correctAnswersCounter = ref(0)
-const currentQuestion = computed(() => quizState.value[currentQuestionIndex.value]);
+const progressbarValue = ref(0)
 
+watch(isQuizLoading, () => {
+    progressbarValue.value = 100 / quizState.value.length
+})
+
+const currentQuestion = computed(() => quizState.value[currentQuestionIndex.value]);
 const nextQuestion = () => {
+    progressbarValue.value += 100 / quizState.value.length
     currentQuestionIndex.value++;
     selectedAnswer.value = ''
 };
@@ -31,14 +36,16 @@ const selectAnswer = (key:string) => {
 }
 
 const checkAnswer = () => {
-    isAnswerChecked.value = true
-    setTimeout(() => {
-        isAnswerChecked.value = false
-        nextQuestion()
-    }, 2000)
+    if(selectedAnswer.value) {
+        isAnswerChecked.value = true
+        setTimeout(() => {
+            isAnswerChecked.value = false
+            nextQuestion()
+        }, 2000)
     if (selectedAnswer.value == currentQuestion.value.correct_answer) {
         correctAnswersCounter.value++
-    } 
+        } 
+    }
 };
 </script>
 
@@ -49,10 +56,13 @@ const checkAnswer = () => {
             <button class="quiz__return-btn">go back</button>
             <div class="quiz__progress-wrapper">
                 <div class="quiz__progress-bar">
-                    <div class="quiz__per" />
+                    <div 
+                        class="quiz__per"
+                        :style="{width: progressbarValue + '%'}"
+                    />
                 </div>
                 <div class="quiz__progress-count">
-                    {{ currentQuestionIndex }}/{{ quizState.length }}
+                    {{ currentQuestionIndex + 1 }}/{{ quizState.length }}
                 </div>
             </div>
             <h2 class="quiz__question">
@@ -88,6 +98,11 @@ const checkAnswer = () => {
 </template>
 
 <style lang="scss" scoped>
+.quiz__wrapper {
+    // min-height: 100%;
+    // display: grid;
+    // grid-template-rows: auto auto auto 1fr auto;
+}
 .quiz__return-btn {
     @include stroke(2px, #000);
 
@@ -152,7 +167,7 @@ const checkAnswer = () => {
     // text-align: center;
     color: $base-yellow;
     font-family: $base-font;
-    font-size: 35px;
+    font-size: 30px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
@@ -176,7 +191,7 @@ const checkAnswer = () => {
     color: $base-yellow;
     text-align: center;
     font-family: $base-font;
-    font-size: 30px;
+    font-size: 20px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;

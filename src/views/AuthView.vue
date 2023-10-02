@@ -23,14 +23,20 @@
     </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { sendRegistrationDetails } from '@/api/sendRegistrationDetails';
+import { ref } from 'vue';
 
-export default defineComponent({
-    setup() {
-        return {};
-    },
-});
+
+const result = ref('')
+
+const getData = async () => {
+    const data = await sendRegistrationDetails()
+    result.value = data
+}
+
+getData()
+
 </script>
 
 <style lang="scss" scoped>
