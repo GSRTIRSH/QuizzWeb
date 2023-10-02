@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizzWebApi", "QuizzWebApi.csproj", "{F0CC58D7-B324-4E0B-85AC-BB0AF236A712}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizzWebApi", "src\QuizzWebApi.csproj", "{935EEA3F-1BD6-422C-93F6-43B685D7A515}"
 EndProject
 Global
