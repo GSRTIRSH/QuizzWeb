@@ -1,5 +1,6 @@
 <template>
     <div class="auth">
+        {{ result }}
         <div class="auth__wrapper">
             <img
                 src="@/assets/images/auth-image.png"
@@ -14,7 +15,7 @@
                     src="@/assets/images/auth-delimiter.svg"
                     class="auth__delimiter"
                 />
-                <button class="auth__button"><span>sign up</span></button>
+                <button @click="getData" class="auth__button"><span>sign up</span></button>
                 <button class="auth__button">
                     <span>log in as a guest</span>
                 </button>
@@ -35,7 +36,6 @@ const getData = async () => {
     result.value = data
 }
 
-getData()
 
 </script>
 
