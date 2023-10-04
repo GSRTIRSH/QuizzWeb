@@ -32,6 +32,7 @@ import { ref } from 'vue';
 const result = ref('')
 
 const getData = async () => {
+    console.error("fuckyou")
     const data = await sendRegistrationDetails()
     result.value = data
 }
