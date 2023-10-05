@@ -1,7 +1,11 @@
 body {
-    font-family: $base-font;
+    font-family: $base-text-font;
     background: $base-violet;
 }
+
+body::-webkit-scrollbar {
+    display: none;
+  }
 
 html,
 body {
@@ -16,6 +20,10 @@ body {
     padding: 0px 15px;
     max-width: 1045px;
     margin: 0 auto;
+}
+
+img {
+    pointer-events: none;
 }
 
 

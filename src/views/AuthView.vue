@@ -74,7 +74,7 @@ const getData = async () => {
     background: $base-gray;
 
     color: $base-orange;
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 27px;
     font-style: normal;
     font-weight: 400;

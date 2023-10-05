@@ -43,7 +43,7 @@ export default defineComponent({
 
     position: relative;
     bottom: 4px;
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 40px;
     font-style: normal;
     font-weight: 400;
@@ -62,7 +62,7 @@ export default defineComponent({
     display: flex;
 }
 .header__button {
-    font-family: $base-font;
+    font-family: $base-title-font;
     background-color: $base-gray;
     font-size: 20px;
     font-style: normal;

@@ -44,7 +44,7 @@ export default defineComponent({
 .main__title {
     @include stroke(2px, #000);
 
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 30px;
     font-style: normal;
     font-weight: 400;
@@ -64,7 +64,7 @@ export default defineComponent({
 .main__subtitle {
     @include stroke(1px, #000);
     color: $base-yellow;
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 26px;
     font-style: normal;
     font-weight: 400;
@@ -77,7 +77,7 @@ export default defineComponent({
     border: 2px solid $base-yellow;
     background: #322F32;
     color: $base-yellow;
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 27px;
     font-style: normal;
     font-weight: 400;

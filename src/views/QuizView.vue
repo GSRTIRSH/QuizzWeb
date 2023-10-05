@@ -143,7 +143,7 @@ const checkAnswer = () => {
 
         color: $base-yellow;
         text-align: center;
-        font-family: $base-font;
+        font-family: $base-text-font;
         font-size: 20px;
         font-style: normal;
         font-weight: 400;
@@ -166,7 +166,7 @@ const checkAnswer = () => {
 
     // text-align: center;
     color: $base-yellow;
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 30px;
     font-style: normal;
     font-weight: 400;
@@ -190,7 +190,7 @@ const checkAnswer = () => {
 
     color: $base-yellow;
     text-align: center;
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
@@ -220,7 +220,7 @@ const checkAnswer = () => {
         padding: 6px 0px 10px 0px;
 
         text-align: center;
-        font-family: $base-font;
+        font-family: $base-title-font;
         font-size: 26px;
         font-style: normal;
         font-weight: 400;

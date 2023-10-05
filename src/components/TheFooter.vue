@@ -32,7 +32,7 @@ export default defineComponent({
     align-items: center;
 }
 .footer__signature {
-    font-family: $base-font;
+    font-family: $base-title-font;
     font-size: 20px;
     font-style: normal;
     font-weight: 400;
