@@ -9,7 +9,7 @@ public class Program
 
         // Add services to the container.
         
-        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "5200";
 
 
         builder.Services.AddControllers();
@@ -17,6 +17,15 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+        });
 
         builder.WebHost.UseKestrel(
             serverOptions =>
@@ -25,6 +34,7 @@ public class Program
             });
         
         var app = builder.Build();
+        app.UseCors("AllowAll");
         
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
