@@ -1,3 +1,5 @@
+using QuizzWebApi.Models;
+
 namespace QuizzWebApi;
 public class Program
 {
@@ -6,14 +8,24 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        var app = builder.Build();
 
+        builder.WebHost.UseKestrel(
+            serverOptions =>
+            {
+                serverOptions.ListenAnyIP(int.Parse(port));
+            });
+        
+        var app = builder.Build();
+        
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -21,9 +33,9 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
 
-        app.UseAuthorization();
+        //app.UseAuthorization();
 
         app.MapControllers();
 

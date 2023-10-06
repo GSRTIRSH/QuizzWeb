@@ -22,10 +22,8 @@ public class WeatherForecastController : ControllerBase
     [HttpGet(Name = "GetWeatherForecast")]
     public IEnumerable<WeatherForecast> Get()
     {
-        var uc = new UserCreds();
-        int e = uc.id;
-        
-        //var user = new User(0, "quizz", "quizz@gmail.com", "112312323");
+        var uc = new UserCreds() { Id = 0, FirstName = "quizz", Email = "quizz@gmail.com" };
+
         return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

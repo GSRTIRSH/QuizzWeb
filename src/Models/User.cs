@@ -4,7 +4,7 @@ namespace QuizzWebApi.Models;
 
 public class User
 {
-    public int id;
-    public int[] quizzes;
+    public int Id;
+    public int[] Quizzes;
 
 }
