@@ -13,7 +13,7 @@ const credentials: object =
 export const sendRegistrationDetails = async (label1: string, label2: string): Promise<boolean> => {
 
     //get 
-    const aw = await fetch(`${config.API_URL}/shit`);
+    const aw = await fetch(`${config.YC_API_URL}/shit`);
     const dt: string = await aw.text();
     console.warn(dt);
 
@@ -33,7 +33,7 @@ export const sendRegistrationDetails = async (label1: string, label2: string): P
     };
 
     //http post
-    const response: void = await fetch(`${config.API_URL}/shit`, requestOptions)
+    const response: void = await fetch(`${config.YC_API_URL}/shit`, requestOptions)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -53,6 +53,7 @@ export const sendRegistrationDetails = async (label1: string, label2: string): P
 
     // Получение данных из Session Storage
     const value = sessionStorage.getItem('isLogin');
-
+    console.log(value);
+    
     return isLogin;
 }
