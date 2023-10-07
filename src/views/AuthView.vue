@@ -28,9 +28,10 @@ import { sendRegistrationDetails } from '@/api/sendRegistrationDetails';
 import { ref } from 'vue';
 
 //TODO: refactor this shitcode
+//The property 'value' does not exist on value of type 'HTMLElement'
 const getData = async () => {
-    var e1 = document.getElementById('e1').value;
-    var e2 = document.getElementById('e2').value;
+    var e1 = (<HTMLInputElement>document.getElementById("e1")).value;
+    var e2 = (<HTMLInputElement>document.getElementById("e2")).value;
     const data = await sendRegistrationDetails(e1, e2);
 }
 
