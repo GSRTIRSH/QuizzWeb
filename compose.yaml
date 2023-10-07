@@ -8,8 +8,8 @@ services:
 #      - "8080:80"
 
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
+    image: quizzapi
+    container_name: qa
+    build: ./backend
     ports:
       - "5200:80"
