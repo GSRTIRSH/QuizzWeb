@@ -1,6 +1,5 @@
 <template>
     <div class="auth">
-        {{ result }}
         <div class="auth__wrapper">
             <img
                 src="@/assets/images/auth-image.png"
@@ -8,14 +7,14 @@
                 class="auth__image"
             />
             <div class="auth__input-container">
-                <input type="email" class="auth__input" />
-                <input type="email" class="auth__input" />
-                <button class="auth__button"><span>log in</span></button>
+                <input type="email" id="e1" class="auth__input" />
+                <input type="email" id="e2" class="auth__input" />
+                <button @click="getData" class="auth__button"><span>log in</span></button>
                 <img
                     src="@/assets/images/auth-delimiter.svg"
                     class="auth__delimiter"
                 />
-                <button @click="getData" class="auth__button"><span>sign up</span></button>
+                <button class="auth__button"><span>sign up</span></button>
                 <button class="auth__button">
                     <span>log in as a guest</span>
                 </button>
@@ -28,15 +27,12 @@
 import { sendRegistrationDetails } from '@/api/sendRegistrationDetails';
 import { ref } from 'vue';
 
-
-const result = ref('')
-
+//TODO: refactor this shitcode
 const getData = async () => {
-    console.error("fuckyou")
-    const data = await sendRegistrationDetails()
-    result.value = data
+    var e1 = document.getElementById('e1').value;
+    var e2 = document.getElementById('e2').value;
+    const data = await sendRegistrationDetails(e1, e2);
 }
-
 
 </script>
 
