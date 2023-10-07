@@ -22,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         name: 'Quiz',
-        path: '/quiz/:tag/:difficulty',
+        path: '/quiz/:topic/:difficulty',
         component: QuizView,
         props: true
     },
