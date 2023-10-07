@@ -8,7 +8,9 @@ namespace QuizzWebApi.Controllers;
 [Route("api/[controller]")]
 public class ShitController : ControllerBase
 {
-    [HttpGet(Name = "Shit")]
+    
+    //GET: api/shit
+    [HttpGet(Name = "shit")]
     public string Get()
     {
         return @"
@@ -33,6 +35,7 @@ public class ShitController : ControllerBase
 ⠀⠈⠛⣷⣦⣤⣤⣤⣤⣤⣤⣶⡶⠾⠿⠟⠿⠿⠿⠶⣶⣶⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣶⠶⠿⠛⠉⠀⠀";
     }
 
+    //POST: api/shit
     [HttpPost()]
     public string Post([FromBody] JsonElement json)
     {

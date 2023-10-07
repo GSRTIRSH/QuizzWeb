@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using QuizzWebApi.Data;
 using QuizzWebApi.Models;
 
 namespace QuizzWebApi;
@@ -9,7 +11,8 @@ public class Program
 
         // Add services to the container.
         
-        var port = Environment.GetEnvironmentVariable("PORT") ?? "5200";
+        //var port = Environment.GetEnvironmentVariable("PORT") ?? "5200";
+        var port = "5200";
 
 
         builder.Services.AddControllers();
@@ -27,11 +30,16 @@ public class Program
             });
         });
 
-        builder.WebHost.UseKestrel(
-            serverOptions =>
-            {
-                serverOptions.ListenAnyIP(int.Parse(port));
-            });
+        var configuration = builder.Configuration;
+
+        builder.Services.AddDbContext<UserContext>(options => 
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+ 
+        // builder.WebHost.UseKestrel(
+        //     serverOptions =>
+        //     {
+        //         serverOptions.ListenAnyIP(int.Parse(port));
+        //     });
         
         var app = builder.Build();
         app.UseCors("AllowAll");
