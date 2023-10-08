@@ -159,7 +159,7 @@ const { state: quizState, isLoading: isQuizLoading } = useAsyncState<
 
         .quiz__button-prev {
             border: 2px solid $base-yellow;
-            color: $base-yellow;
+            color: $base-yellow; 
             
         }
         .quiz__button-next {
