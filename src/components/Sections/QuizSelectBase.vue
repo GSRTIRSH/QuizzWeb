@@ -1,8 +1,7 @@
 <template>
-    <div class="select">
+    <div class="select ">
         <div class="select__wrapper">
-            <div class="select__title">Randomized Developer Quiz</div>
-            <div class="select__cards-container">
+            <div id="scrollPoint" class="select__cards-container">
                 <QuizCard 
                     v-for="(card, index) in baseCards" 
                     :key="index" 
@@ -19,7 +18,6 @@ import QuizCard from '@/components/QuizCard.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
 
 const handleCardData = (data: string[]) => {
     router.push({
@@ -89,20 +87,6 @@ const baseCards = [
 <style lang="scss" scoped>
 .select {
     .select__wrapper {
-        .select__title {
-            @include stroke(2px, #000);
-
-            text-align: center;
-            color: $base-yellow;
-            font-family: $base-text-font;
-            font-size: 50px;
-            font-style: normal;
-            font-weight: bold;
-            line-height: normal;
-            letter-spacing: 1.728px;
-
-            margin: 40px 0px 15px 0px;
-        }
         .select__cards-container {
             justify-items: center;
             display: grid;
