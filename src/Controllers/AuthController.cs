@@ -6,7 +6,7 @@ namespace QuizzWebApi.Controllers;
 [Route("api/[controller]")]
 //api versioning in future
 //[Route("api/v{1}/[controller]")]
-public class AuthController
+public class AuthController: ControllerBase
 {
-    
+    // ??????????? how ???????????
 }

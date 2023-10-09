@@ -78,11 +78,4 @@ public class UserController : ControllerBase
 
         return NoContent();
     }
-
-    // dummy endpoint to test the database connection
-    [HttpGet("test")]
-    public string Test()
-    {
-        return "Hello World!";
-    }
 }

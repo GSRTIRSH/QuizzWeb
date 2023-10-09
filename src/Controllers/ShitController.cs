@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using QuizzWebApi.Models;
 
 namespace QuizzWebApi.Controllers;
 
@@ -39,7 +38,6 @@ public class ShitController : ControllerBase
     [HttpPost()]
     public string Post([FromBody] JsonElement json)
     {
-        string c = json.ToString();
         return @"{""isAuth"": ""true""}";
     }
 }

@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using QuizzWebApi.Data;
-using QuizzWebApi.Models;
 
 namespace QuizzWebApi;
+
 public class Program
 {
     public static void Main(string[] args)
@@ -10,7 +10,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        
+
         //var port = Environment.GetEnvironmentVariable("PORT") ?? "5200";
         var port = "5200";
 
@@ -22,9 +22,9 @@ public class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll", builder =>
+            options.AddPolicy("AllowAll", policyBuilder =>
             {
-                builder.AllowAnyOrigin()
+                policyBuilder.AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader();
             });
@@ -32,24 +32,27 @@ public class Program
 
         var configuration = builder.Configuration;
 
-        builder.Services.AddDbContext<UserContext>(options => 
+        builder.Services.AddDbContext<UserContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
- 
+
+        builder.Services.AddDbContext<QuizContext>(options =>
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
         // builder.WebHost.UseKestrel(
         //     serverOptions =>
         //     {
         //         serverOptions.ListenAnyIP(int.Parse(port));
         //     });
-        
+
         var app = builder.Build();
         app.UseCors("AllowAll");
-        
+
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+
+        //if (app.Environment.IsDevelopment())
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
         //app.UseHttpsRedirection();
 
