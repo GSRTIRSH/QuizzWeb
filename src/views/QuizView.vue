@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Swiper, SwiperSlide } from 'swiper/vue';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/vue';
 import { Pagination, Navigation } from 'swiper/modules';
 import 'swiper/scss';
 import 'swiper/scss/pagination';
@@ -12,9 +12,14 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const { state: quizState, isLoading: isQuizLoading } = useAsyncState<
-    Question[]
->(getListOfQuizzes(route.params.topic, route.params.difficulty), []);
+const { state: quizState, isLoading: isQuizLoading } = useAsyncState<Question[]>
+(getListOfQuizzes(route.params.topic, route.params.difficulty), []);
+
+const selectedAnswers = ref<string[]>([]);
+const currentQuestion = ref(0);
+
+const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswers.value[questionIndex] = answerIndex;
+
 </script>
 
 <template>
@@ -24,29 +29,33 @@ const { state: quizState, isLoading: isQuizLoading } = useAsyncState<
             class="quiz__swiper"
             :grabCursor="false"
             :pagination="{
-                type: 'progressbar',
+                type: 'progressbar'
             }"
             :navigation="{
                 nextEl: '.quiz__button-next',
                 prevEl: '.quiz__button-prev',
             }"
             :modules="[Pagination, Navigation]"
+            :allowTouchMove="false"
         >
             <swiper-slide
                 class="quiz__slide"
-                v-for="(currentQuiz, index) in quizState"
-                :key="index"
+                v-for="(question, questionIndex) in quizState"
+                :key="questionIndex"
+                
             >
                 <div class="quiz__slide-container slide__wrapper">
                     <h1 class="quiz__question">
-                        {{ currentQuiz.question }}
+                        {{ question.question }}
                     </h1>
                     <div class="quiz__answers-container">
                         <div
                             class="quiz__answer"
-                            v-for="(answer, index) in currentQuiz.answers"
-                            :key="index"
+                            v-for="(answer, answerIndex) in question.answers"
+                            :key="answerIndex"
                             v-show="answer"
+                            @click="addAnswer(questionIndex, answerIndex)"
+                            :class="{'quiz__answer-active': answerIndex === selectedAnswers[questionIndex]}"
                         >
                             <span>{{ answer }}</span>
                         </div>
@@ -84,21 +93,22 @@ const { state: quizState, isLoading: isQuizLoading } = useAsyncState<
 
                 color: $base-yellow;
                 font-family: $base-text-font;
-                font-size: 28px;
+                font-size: 26px;
                 font-style: normal;
                 font-weight: bold;
                 line-height: normal;
                 letter-spacing: 2.345px;
                 text-align: start;
 
-                margin: 40px auto 30px auto;
+                margin-top: 40px;
+                margin-bottom: 30px;
             }
 
             .quiz__answers-container {
                 flex: 1;
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
+                grid-template-columns: 1fr ;
+                gap: 10px;
                 margin-bottom: 50px;
             }
 
@@ -109,19 +119,28 @@ const { state: quizState, isLoading: isQuizLoading } = useAsyncState<
                 align-items: center;
                 justify-content: center;
                 border: 3px solid $base-gray;
+                cursor: pointer;
 
                 span {
-                    padding: 10px;
                     @include stroke(1px, #000000);
+                    padding: 10px;
                     font-family: $base-text-font;
                     color: $base-yellow;
-                    font-size: 20px;
+                    font-size: 1.4vw;
                     font-style: normal;
                     font-weight: bold;
                     line-height: normal;
-                    letter-spacing: 2.345px;
-                    text-align: start;
+                    letter-spacing: 0.5px;
+                    text-align: center;
                 }
+            }
+
+            .quiz__answer-active {
+                border: 3px solid $base-yellow;
+            }
+
+            .quiz__answer::-webkit-scrollbar {
+                display: none;
             }
         }
     }

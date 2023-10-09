@@ -1,7 +1,7 @@
 <template>
     <header class="header">
         <div class="header__wrapper">
-            <span class="header__logo">
+            <span class="header__logo" @click="$router.push({name: 'Main'})">
                 <span>CODE</span>
                 <span>BUSTERS</span>
             </span>
@@ -49,6 +49,7 @@ export default defineComponent({
     font-weight: 400;
     line-height: normal;
     letter-spacing: 2.68px;
+    cursor: pointer;
 
     span:first-child {
         color: $base-orange;

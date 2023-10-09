@@ -26,7 +26,6 @@ const scrollToQuizSelect = () => {
     document.getElementById('scrollPoint')?.scrollIntoView({ behavior: 'smooth' });
 }
 </script>
-
 <style lang="scss" scoped>
 .main {
     display: flex;
