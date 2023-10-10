@@ -1,11 +1,12 @@
 version: '3.8'
 services:
-#  frontend:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile.frontend
-#    ports:
-#      - "8080:80"
+
+  frontend:
+    image: quizzweb
+    container_name: qw
+    build: ./frontend
+    ports:
+      - "8080:80"
 
   api:
     image: quizzapi
@@ -13,3 +14,10 @@ services:
     build: ./backend
     ports:
       - "5200:80"
+
+  cms:
+    image: quizzcms
+    container_name: qc
+    build: ./CMS
+    ports:
+      - "5000:80"
