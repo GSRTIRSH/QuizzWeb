@@ -12,6 +12,6 @@ CREATE TABLE quizzes(
     tip TEXT NULL,
     tags JSONB NOT NULL, 
     category TEXT NOT NULL,
-    difficulty TEXT NOT NULL
-    author INTEGER NULL;
+    difficulty TEXT NOT NULL,
+    author INTEGER NULL
 );

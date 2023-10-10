@@ -4,6 +4,6 @@ CREATE TABLE users (
     sub_name VARCHAR(255) NULL,
     email VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    token VARCHAR(255) NULL
-    my-quizzes INTEGER[] NULL
+    token VARCHAR(255) NULL,
+    my_quizzes INTEGER[] NULL
 );
