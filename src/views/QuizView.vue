@@ -9,17 +9,21 @@ import { getListOfQuizzes } from '@/api/getListOfQuizzes';
 import { useAsyncState } from '@vueuse/core';
 import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { $ref } from 'vue/macros';
 
 const route = useRoute();
 
-const { state: quizState, isLoading: isQuizLoading } = useAsyncState<Question[]>
-(getListOfQuizzes(route.params.topic, route.params.difficulty), []);
+const { 
+    state: quizState, 
+    isLoading: isQuizLoading 
+} = useAsyncState<Question[]>(getListOfQuizzes(route.params.topic, route.params.difficulty), []);
 
+const QuizSwiper = ref();
+const currentSlideIndex = ref(0);
 const selectedAnswers = ref<string[]>([]);
-const currentQuestion = ref(0);
 
-const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswers.value[questionIndex] = answerIndex;
-
+const addAnswer = (questionIndex: number, answerIndex: string) =>
+    (selectedAnswers.value[questionIndex] = answerIndex);
 </script>
 
 <template>
@@ -29,7 +33,7 @@ const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswer
             class="quiz__swiper"
             :grabCursor="false"
             :pagination="{
-                type: 'progressbar'
+                type: 'progressbar',
             }"
             :navigation="{
                 nextEl: '.quiz__button-next',
@@ -37,12 +41,13 @@ const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswer
             }"
             :modules="[Pagination, Navigation]"
             :allowTouchMove="false"
+            @swiper="(e) => (QuizSwiper = e)"
+            @activeIndexChange="() => (currentSlideIndex = QuizSwiper.activeIndex)" 
         >
             <swiper-slide
                 class="quiz__slide"
                 v-for="(question, questionIndex) in quizState"
                 :key="questionIndex"
-                
             >
                 <div class="quiz__slide-container slide__wrapper">
                     <h1 class="quiz__question">
@@ -55,7 +60,10 @@ const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswer
                             :key="answerIndex"
                             v-show="answer"
                             @click="addAnswer(questionIndex, answerIndex)"
-                            :class="{'quiz__answer-active': answerIndex === selectedAnswers[questionIndex]}"
+                            :class="{
+                                'quiz__answer-active': 
+                                    answerIndex === selectedAnswers[questionIndex]
+                                }"
                         >
                             <span>{{ answer }}</span>
                         </div>
@@ -65,7 +73,8 @@ const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswer
         </swiper>
         <div class="quiz__buttons buttons__wrapper">
             <button class="quiz__button-prev"><span>Prev</span></button>
-            <button class="quiz__button-next"><span>Next</span></button>
+            <button v-show="currentSlideIndex !== quizState.length - 1" class="quiz__button-next"><span>Next</span></button>
+            <button @click="$router.push({name: 'Results'})" v-show="currentSlideIndex === quizState.length - 1" class="quiz__button-submit"><span>Submit</span></button>
         </div>
     </div>
 </template>
@@ -107,7 +116,7 @@ const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswer
             .quiz__answers-container {
                 flex: 1;
                 display: grid;
-                grid-template-columns: 1fr ;
+                grid-template-columns: 1fr;
                 gap: 10px;
                 margin-bottom: 50px;
             }
@@ -178,13 +187,15 @@ const addAnswer = (questionIndex: number, answerIndex: string) => selectedAnswer
 
         .quiz__button-prev {
             border: 2px solid $base-yellow;
-            color: $base-yellow; 
-            
+            color: $base-yellow;
         }
         .quiz__button-next {
             border: 2px solid $base-orange;
             color: $base-orange;
-            
+        }
+        .quiz__button-submit {
+            border: 2px solid rgb(30, 157, 30);
+            color: rgb(30, 157, 30);
         }
     }
 }
