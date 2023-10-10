@@ -24,15 +24,17 @@
 </template>
 
 <script setup lang="ts">
-// import { sendRegistrationDetails } from '@/api/sendRegistrationDetails';
-// import { ref } from 'vue';
+import { sendRegistrationDetails } from '@/api/sendRegistrationDetails';
+import { ref } from 'vue';
+
+
 
 // //TODO: refactor this shitcode
-// const getData = async () => {
-//     var e1 = document.getElementById('e1').value;
-//     var e2 = document.getElementById('e2').value;
-//     const data = await sendRegistrationDetails(e1, e2);
-// }
+const getData = async () => {
+    var e1 = (<HTMLInputElement>document.getElementById("e1")).value;
+    var e2 = (<HTMLInputElement>document.getElementById("e2")).value;
+    const data = await sendRegistrationDetails(e1, e2);
+}
 
 </script>
 
