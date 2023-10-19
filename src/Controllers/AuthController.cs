@@ -7,24 +7,23 @@ namespace QuizzWebApi.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("2.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
-public class AuthController: ControllerBase
+public class AuthController : ControllerBase
 {
     public AuthController()
     {
-        
     }
 
     [HttpGet]
     [MapToApiVersion("1.0")]
-    public int TestV1()
+    public IActionResult TestV1()
     {
-        return 322;
+        return Ok("auth v1");
     }
-    
+
     [HttpGet]
     [MapToApiVersion("2.0")]
-    public string TestV2()
+    public IActionResult TestV2()
     {
-        return "322";
+        return Ok("auth v2");
     }
 }
