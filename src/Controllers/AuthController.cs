@@ -1,12 +1,30 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 
 namespace QuizzWebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
-//api versioning in future
-//[Route("api/v{1}/[controller]")]
+[ApiVersion("1.0")]
+[ApiVersion("2.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class AuthController: ControllerBase
 {
-    // ??????????? how ???????????
+    public AuthController()
+    {
+        
+    }
+
+    [HttpGet]
+    [MapToApiVersion("1.0")]
+    public int TestV1()
+    {
+        return 322;
+    }
+    
+    [HttpGet]
+    [MapToApiVersion("2.0")]
+    public string TestV2()
+    {
+        return "322";
+    }
 }
