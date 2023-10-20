@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuizzWebApi.Models;
 
-[Table("quizzesV1")]
+[Table("quizzesv1")]
 public class QuizV1
 {
     [Key] 
