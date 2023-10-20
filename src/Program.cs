@@ -2,6 +2,7 @@ using Asp.Versioning;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
 using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
@@ -18,21 +19,41 @@ public class Program
         //var port = Environment.GetEnvironmentVariable("PORT") ?? "5200";
 
         builder.Services.AddControllers();
-        
+        builder.Services.AddControllers(options => { options.Filters.Add(new MyFilter()); });
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
-        builder.Services.AddControllers(options => { options.Filters.Add(new MyFilter()); });
-
+        builder.Services.AddScoped<ApiAuthFilter>();
 
         builder.Services.AddSwaggerGen(options =>
         {
-            /*options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-            options.IgnoreObsoleteActions();
-            options.IgnoreObsoleteProperties();
-            options.CustomSchemaIds(type => type.FullName);*/
-        });
+            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+            {
+                Description = "",
+                Type = SecuritySchemeType.ApiKey,
+                Name = "x-api-key",
+                In = ParameterLocation.Header,
+                Scheme = "ApiKeyScheme"
+            });
 
+            var scheme = new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "ApiKey",
+                },
+                In = ParameterLocation.Header
+            };
+
+            var requirement = new OpenApiSecurityRequirement()
+            {
+                { scheme, new List<string>() }
+            };
+
+            options.AddSecurityRequirement(requirement);
+        });
 
         builder.Services.AddCors(options =>
         {
@@ -46,17 +67,19 @@ public class Program
 
         var configuration = builder.Configuration;
 
-        builder.Services.AddApiVersioning(options =>
-        {
-            options.AssumeDefaultVersionWhenUnspecified = true;
-            options.DefaultApiVersion = new ApiVersion(1, 0);
-            options.UnsupportedApiVersionStatusCode = 501;
-            options.ReportApiVersions = true;
-        }).AddApiExplorer(options =>
-        {
-            options.GroupNameFormat = "'v'VVV";
-            options.SubstituteApiVersionInUrl = true;
-        });
+        builder.Services
+            .AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.UnsupportedApiVersionStatusCode = 501;
+                options.ReportApiVersions = true;
+            })
+            .AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -71,9 +94,7 @@ public class Program
         builder.Services.AddDbContext<QuizContext>(options =>
             options.UseNpgsql(connectionString));
 
-        /*
-        builder.Services.AddAuthentication();
-        builder.Services.AddAuthorization();*/
+        //builder.Services.AddAuthorization();
 
         var app = builder.Build();
         app.UseCors("AllowAll");
@@ -105,7 +126,7 @@ public class Program
             await c.Response.WriteAsync("Api response");
         });
 
-        app.MapHealthChecks("api/health", new HealthCheckOptions()
+        app.MapHealthChecks("api/health", new HealthCheckOptions
         {
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });
@@ -113,6 +134,7 @@ public class Program
         //app.UseHsts();
         //app.UseHttpsRedirection();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();

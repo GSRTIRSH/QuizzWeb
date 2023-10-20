@@ -1,12 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
 using QuizzWebApi.Models;
 
 namespace QuizzWebApi.Controllers;
 
 [ApiController]
+[QuizExceptionFilter]
 [Route("api/[controller]")]
+[ServiceFilter(typeof(ApiAuthFilter))]
 public class UserController : ControllerBase
 {
     private readonly UserContext _context;

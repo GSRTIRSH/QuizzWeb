@@ -11,6 +11,7 @@ namespace QuizzWebApi.Controllers.v2;
 [ApiVersion("2.0")]
 [QuizExceptionFilter]
 [Route("api/v{version:apiVersion}/[controller]")]
+[ServiceFilter(typeof(ApiAuthFilter))]
 public class QuizzesController : ControllerBase
 {
     private readonly QuizContextV2 _context;

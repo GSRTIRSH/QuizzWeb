@@ -1,5 +1,6 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
+using QuizzWebApi.Configuration.Filters;
 
 namespace QuizzWebApi.Controllers;
 
