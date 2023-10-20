@@ -9,10 +9,6 @@ namespace QuizzWebApi.Controllers;
 [Route("api/v{version:apiVersion}/[controller]")]
 public class AuthController : ControllerBase
 {
-    public AuthController()
-    {
-    }
-
     [HttpGet]
     [MapToApiVersion("1.0")]
     public IActionResult TestV1()

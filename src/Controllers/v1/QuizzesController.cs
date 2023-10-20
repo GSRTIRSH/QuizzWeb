@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Models;
 using QuizzWebApi.Data;
 
@@ -9,6 +10,7 @@ namespace QuizzWebApi.Controllers.v1;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
+
 public class QuizzesController : ControllerBase
 {
     private readonly QuizContext _context;
@@ -19,6 +21,7 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpGet]
+    [QuizExceptionFilter]
     public async Task<IEnumerable<QuizV1>> GetQuizzes()
     {
         return await _context.Quizzes.ToListAsync();

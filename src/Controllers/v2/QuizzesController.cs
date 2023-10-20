@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Models;
 using QuizzWebApi.Data;
 
@@ -8,6 +9,7 @@ namespace QuizzWebApi.Controllers.v2;
 
 [ApiController]
 [ApiVersion("2.0")]
+[QuizExceptionFilter]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class QuizzesController : ControllerBase
 {

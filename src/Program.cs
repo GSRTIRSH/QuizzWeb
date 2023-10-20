@@ -1,12 +1,11 @@
 using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
-using Microsoft.AspNetCore.Mvc;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using QuizzWebApi.Configure;
+using QuizzWebApi.Configuration;
+using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
-using Swashbuckle.AspNetCore.SwaggerGen;
+using QuizzWebApi.Services.Health;
 
 namespace QuizzWebApi;
 
@@ -16,14 +15,15 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
-        //var port = Environment.GetEnvironmentVariable("PORT") ?? "520
+        //var port = Environment.GetEnvironmentVariable("PORT") ?? "5200";
 
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+        
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+        builder.Services.AddControllers(options => { options.Filters.Add(new MyFilter()); });
+
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -32,7 +32,7 @@ public class Program
             options.IgnoreObsoleteProperties();
             options.CustomSchemaIds(type => type.FullName);*/
         });
-        
+
 
         builder.Services.AddCors(options =>
         {
@@ -52,25 +52,28 @@ public class Program
             options.DefaultApiVersion = new ApiVersion(1, 0);
             options.UnsupportedApiVersionStatusCode = 501;
             options.ReportApiVersions = true;
-        }).AddMvc().AddApiExplorer(options =>
+        }).AddApiExplorer(options =>
         {
             options.GroupNameFormat = "'v'VVV";
             options.SubstituteApiVersionInUrl = true;
         });
 
-        //builder.Services.AddEndpointsApiExplorer();
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+        builder.Services.AddHealthChecks()
+            .AddNpgSql(connectionString)
+            .AddCheck<RelationHeathCheck<QuizContext>>("QuizzesTable")
+            .AddCheck<RelationHeathCheck<UserContext>>("UsersTable");
 
         builder.Services.AddDbContext<UserContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(connectionString));
 
         builder.Services.AddDbContext<QuizContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(connectionString));
 
-        // builder.WebHost.UseKestrel(
-        //     serverOptions =>
-        //     {
-        //         serverOptions.ListenAnyIP(int.Parse(port));
-        //     });
+        /*
+        builder.Services.AddAuthentication();
+        builder.Services.AddAuthorization();*/
 
         var app = builder.Build();
         app.UseCors("AllowAll");
@@ -89,18 +92,28 @@ public class Program
             foreach (var description in descriptions)
             {
                 var url = $"/swagger/{description.GroupName}/swagger.json";
-                //var name = description.GroupName.ToUpperInvariant();
-                var name = $"QuizWebApi {description.GroupName}";
+                var name = $"{description.GroupName}";
                 options.SwaggerEndpoint(url, name);
             }
         });
-        
-        //check if api is working
-        app.MapGet("api/", () => new StatusCodeResult(StatusCodes.Status200OK));
 
+        //check if api is working
+        app.MapGet("api/", async c =>
+        {
+            c.Response.StatusCode = StatusCodes.Status200OK;
+            c.Response.ContentType = "text/plain";
+            await c.Response.WriteAsync("Api response");
+        });
+
+        app.MapHealthChecks("api/health", new HealthCheckOptions()
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+
+        //app.UseHsts();
         //app.UseHttpsRedirection();
 
-        //app.UseAuthorization();
+        app.UseAuthorization();
 
         app.MapControllers();
 

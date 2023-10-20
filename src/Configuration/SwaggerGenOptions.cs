@@ -3,21 +3,21 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace QuizzWebApi.Configure;
+namespace QuizzWebApi.Configuration;
 
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
-    private readonly IApiVersionDescriptionProvider provider;
+    private readonly IApiVersionDescriptionProvider _provider;
 
     public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
     {
-        this.provider = provider;
+        this._provider = provider;
     }
 
     public void Configure(SwaggerGenOptions options)
     {
         // add swagger document for every API version discovered
-        foreach (var description in provider.ApiVersionDescriptions)
+        foreach (var description in _provider.ApiVersionDescriptions)
         {
             options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
         }
@@ -32,7 +32,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
     {
         var info = new OpenApiInfo()
         {
-            Title = "Heroes API",
+            Title = "Quiz API",
             Version = description.ApiVersion.ToString()
         };
 
