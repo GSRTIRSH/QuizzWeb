@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-#pragma warning disable CS8618
 
 namespace QuizzWebApi.Models;
 
@@ -49,7 +48,7 @@ public class QuizV1
     public string Difficulty { get; set; }
 }
 
-[Table("quizzesV2")]
+[Table("quizzesv2")]
 public class QuizV2
 {
     [Key] 

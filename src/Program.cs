@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
 using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
+using QuizzWebApi.Models;
 using QuizzWebApi.Services.Health;
 
 namespace QuizzWebApi;
@@ -95,11 +96,20 @@ public class Program
             options.UseNpgsql(connectionString));
 
         //builder.Services.AddAuthorization();
+        //builder.Services.AddAuthentication();
 
         var app = builder.Build();
         app.UseCors("AllowAll");
 
         // Configure the HTTP request pipeline.
+
+        /*using (var scope = app.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<UserContext>();
+            context.Database.EnsureDeleted();
+            var context2 = scope.ServiceProvider.GetRequiredService<QuizContext>();
+            context2.Database.EnsureDeleted();
+        }*/
 
         if (app.Environment.IsDevelopment())
         {
