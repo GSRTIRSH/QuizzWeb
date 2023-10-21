@@ -4,7 +4,7 @@ import { Pagination, Navigation } from 'swiper/modules';
 import 'swiper/scss';
 import 'swiper/scss/pagination';
 import type { Question } from '@/types/types';
-import QuizLoader from '@/components/UI/QuizLoader.vue';
+import QuizLoader from '@/components/QuizLoader.vue';
 import { getListOfQuizzes } from '@/api/getListOfQuizzes';
 import { useAsyncState } from '@vueuse/core';
 import { ref, computed, watch } from 'vue';
@@ -27,9 +27,12 @@ const addAnswer = (questionIndex: number, answerIndex: string) =>
 
 <template>
     <QuizLoader v-if="isQuizLoading" />
-    <div class="tw-flex tw-flex-col tw-max-w-5xl tw-px-0 tw-mx-auto" v-if="!isQuizLoading">
+    <div
+        class="tw-flex tw-flex-col tw-max-w-none tw-px-0"
+        v-if="!isQuizLoading"
+    >
         <swiper
-            class="vh"
+            class="tw-max-w-[100vw] tw-h-full"
             :grabCursor="false"
             :pagination="{
                 type: 'progressbar',
@@ -46,21 +49,22 @@ const addAnswer = (questionIndex: number, answerIndex: string) =>
             "
         >
             <swiper-slide
-                class=""
+                class="tw-text-xl tw-text-center"
                 v-for="(question, questionIndex) in quizState"
                 :key="questionIndex"
             >
-                <div class="">
-                    <h1 class="">
+                <div class="tw-px-4 tw-max-w-6xl tw-mx-auto">
+                    <h1 class="tw-text-base-yellow tw-font-bold tw-text-3xl tw-text-start tw-mt-10 tw-mb-6">
                         {{ question.question }}
                     </h1>
-                    <div class="">
-                        <div
-                            class=""
+                    <div class="tw-grid tw-gap-3 tw-columns-1">
+                        <Button
                             v-for="(answer, answerIndex) in question.answers"
                             :key="answerIndex"
-                            v-show="answer"
                             @click="addAnswer(questionIndex, answerIndex)"
+                            v-show="answer"
+                            :outlined="answerIndex === selectedAnswers[questionIndex] ? false : true"
+                            class="tw-font-base-text tw-justify-center tw-text-xl"
                             :class="{
                                 'quiz__answer-active':
                                     answerIndex ===
@@ -68,40 +72,40 @@ const addAnswer = (questionIndex: number, answerIndex: string) =>
                             }"
                         >
                             <span>{{ answer }}</span>
-                        </div>
+                        </Button>
                     </div>
                 </div>
             </swiper-slide>
         </swiper>
-        <div class="">
-            <button class=""><span>Prev</span></button>
-            <button
+        <div class="tw-max-w-6xl tw-mx-auto tw-flex tw-justify-between tw-w-full tw-mb-5">
+            <Button class="quiz__button-prev"><span>Prev</span></Button>
+            <Button
                 v-show="currentSlideIndex !== quizState.length - 1"
-                class=""
+                class="quiz__button-next"
             >
                 <span>Next</span>
-            </button>
-            <button
+            </Button>
+            <Button
                 @click="$router.push({ name: 'Results' })"
                 v-show="currentSlideIndex === quizState.length - 1"
                 class=""
+                severity="success"
             >
                 <span>Submit</span>
-            </button>
+            </Button>
         </div>
     </div>
 </template>
 
 <style lang="scss">
-.vh {
-    max-width: 100vw;
+.swiper-horizontal {
+    .swiper-pagination-progressbar {
+        height: 7px;
+        .swiper-pagination-progressbar-fill {
+            background-color: $base-orange;
+        }
+    }
 }
-
-
-
-
-
-
 
 
 // .quiz {
@@ -178,8 +182,6 @@ const addAnswer = (questionIndex: number, answerIndex: string) =>
 //                 display: none;
 //             }
 
-
-
 //     .swiper-horizontal {
 //         .swiper-pagination-progressbar {
 //             height: 7px;
@@ -223,4 +225,5 @@ const addAnswer = (questionIndex: number, answerIndex: string) =>
 //             border: 2px solid rgb(30, 157, 30);
 //             color: rgb(30, 157, 30);
 //         }
-// </style>
+//
+</style>

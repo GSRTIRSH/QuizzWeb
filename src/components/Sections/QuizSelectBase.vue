@@ -1,12 +1,10 @@
 <template>
-    <div class="select">
-        <div class="select__wrapper">
-            <div 
-                id="scrollPoint" 
-                class="tw-justify-items-center tw-grid tw-grid-cols-3 tw-gap-y-10 tw-gap-x-8 tw-mb-10"
-            >
-                <QuizCard v-for="(card, index) in baseCards" :key="index" :card="card" @cardData="handleCardData" />
-            </div>
+    <div class="tw-max-w-6xl tw-mx-auto tw-px-4">
+        <div 
+            id="scrollPoint" 
+            class="tw-justify-items-center tw-grid tw-grid-cols-3 tw-gap-y-10 tw-gap-x-8 tw-mb-10"
+        >
+            <QuizCard v-for="(card, index) in baseCards" :key="index" :card="card" @cardData="handleCardData" />
         </div>
     </div>
 </template>

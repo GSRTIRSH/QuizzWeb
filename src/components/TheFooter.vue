@@ -1,7 +1,7 @@
 <template>
     <footer class="tw-h-16">
-        <div class="tw-flex tw-justify-between tw-items-center tw-max-w-5xl tw-mx-auto tw-px-4">
-            <div class="tw-font-Visitor tw-text-xl">
+        <div class="tw-flex tw-justify-between tw-items-center tw-max-w-6xl tw-mx-auto tw-px-4">
+            <div class="tw-font-base-ui tw-text-xl">
                 <span class="tw-text-base-orange">created by </span>
                 <span class="tw-text-base-yellow">khanov iskander</span>
             </div>

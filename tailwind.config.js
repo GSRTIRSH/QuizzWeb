@@ -13,7 +13,8 @@ export default {
         'base-yellow': '#FAC710'
       },
       fontFamily: {
-        Visitor: ['Visitor Rus', 'sans']
+        'base-ui': ['Visitor Rus', 'sans'],
+        'base-text': ['Disket Mono', 'sans']
       },
     },
   },

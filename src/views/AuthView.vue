@@ -1,4 +1,43 @@
 <template>
+    <div class="tw-flex tw-items-center tw-max-w-6xl tw-mx-auto tw-w-full">
+        <div class="tw-flex tw-justify-between tw-items-center tw-w-full">
+            <img
+                src="@/assets/images/auth-image.png"
+                alt=""
+                class="auth__image"
+            />
+            <form class="auth__input-container tw-self-center tw-w-full tw-max-w-sm tw-mx-auto">
+                <InputText
+                    class="tw-mb-3"
+                    size="large"
+                    name="email"
+                    autocomplete="email"
+                    id="login"
+                    placeholder="Email"
+                />
+                <InputText
+                    class="tw-mb-3"
+                    size="large"
+                    type="password"
+                    name="password"
+                    id="password"
+                    autocomplete="current-password"
+                    placeholder="Password"
+                />
+                <Button class="tw-justify-center tw-text-2xl"><span>sign up</span></Button>
+                <div class="tw-flex tw-items-center">
+                    <div class="tw-h-1 tw-w-full tw-bg-black"/>
+                    <div class="tw-font-base-ui tw-text-xl tw-mx-3 tw-text-black tw-relative tw-bottom-[2px]">or</div>
+                    <div class="tw-h-1 tw-w-full tw-bg-black"/>
+                </div>
+                <Button class="tw-justify-center tw-text-2xl" outlined>
+                    <span>log in as a guest</span>
+                </Button>
+            </form>
+        </div>
+    </div>
+</template>
+<!-- <template>
     <div class="auth">
         <div class="auth__wrapper">
             <img
@@ -21,7 +60,7 @@
             </div>
         </div>
     </div>
-</template>
+</template> -->
 
 <script setup lang="ts">
 import { sendRegistrationDetails } from '@/api/sendRegistrationDetails';

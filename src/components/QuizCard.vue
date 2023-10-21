@@ -22,7 +22,7 @@ const emitCardData = (difficulty: string) =>
 </script>
 
 <template>
-<Card class="tw-w-full" @click.stop="emitCardData('Easy')">
+<Card class="tw-w-full" @click.stop="emitCardData('Hard')">
     <template #header>
         <img :src="card.img" class="tw-h-56 tw-w-full tw-object-cover tw-p-3"/>
     </template>
