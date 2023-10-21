@@ -22,9 +22,25 @@ const emitCardData = (difficulty: string) =>
 </script>
 
 <template>
+<Card class="tw-w-full" @click.stop="emitCardData('Easy')">
+    <template #header>
+        <img :src="card.img" class="tw-h-56 tw-w-full tw-object-cover tw-p-3"/>
+    </template>
+    <template #title>
+        <Chip label="Xuxue Feng" :image="card.img" />
+         <div>Advanced Card</div> 
+    </template>
+    
+    <template #footer>
+        Card subtitle
+    </template>
+</Card>
+</template>
+
+<!-- <template>
     <div class="card" @click="rotateCard">
         <div
-            class="card__front card-container"
+            class="card__front tw-bg-secondary-background card-container"
             :class="{ 'rotate-to-back': isRotate }"
         >
             <img class="card__image" :src="card.img" />
@@ -62,7 +78,6 @@ const emitCardData = (difficulty: string) =>
 
 <style lang="scss" scoped>
 .card {
-    max-width: 340px;
     position: relative;
     transition: 0.2s;
     width: 100%;
@@ -83,7 +98,6 @@ const emitCardData = (difficulty: string) =>
         height: 100%;
     }
     .card__front {
-        background-color: $base-lightpurple;
         position: relative;
         backface-visibility: hidden;
         transition: transform 1s cubic-bezier(0.2, 0.85, 0.4, 1.275);
@@ -215,4 +229,4 @@ const emitCardData = (difficulty: string) =>
         }
     }
 }
-</style>
+</style> -->

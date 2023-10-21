@@ -1,8 +1,10 @@
 <template>
-    <div class="app">
+    <div class="app tw-bg-base-background tw-bg-no-repeat tw-bg-cover">
         <TheHeader />
-        <router-view />
-        <TheFooter v-if="!route.path.includes('/quiz')"/>
+        <div class="tw-max-w-5xl tw-mx-auto tw-px-4">
+            <router-view />
+        </div>
+        <TheFooter v-if="!route.path.includes('/quiz')" />
     </div>
 </template>
 

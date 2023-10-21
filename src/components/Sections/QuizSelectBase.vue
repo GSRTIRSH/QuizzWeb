@@ -1,7 +1,10 @@
 <template>
-    <div class="select ">
+    <div class="select">
         <div class="select__wrapper">
-            <div id="scrollPoint" class="select__cards-container">
+            <div 
+                id="scrollPoint" 
+                class="tw-justify-items-center tw-grid tw-grid-cols-3 tw-gap-y-10 tw-gap-x-8 tw-mb-10"
+            >
                 <QuizCard v-for="(card, index) in baseCards" :key="index" :card="card" @cardData="handleCardData" />
             </div>
         </div>
@@ -13,13 +16,13 @@ import QuizCard from '@/components/QuizCard.vue';
 import { useRouter } from 'vue-router';
 import img_js from '@/assets/images/JavaScriptLogo.png';
 import img_html5 from '@/assets/images/HtmlLogo.png';
-import img_php from '@/assets/images/PHPLogo.png';
+import img_php from '@/assets/images/PHPLogo.jpg';
 import img_devops from '@/assets/images/DevOpsLogo.png';
-import img_docker from '@/assets/images/DockerLogo.png';
-import img_laravel from '@/assets/images/LaravelLogo.png';
-import img_sql from '@/assets/images/SqlLogo.png';
+import img_docker from '@/assets/images/DockerLogo.jpg';
+import img_laravel from '@/assets/images/LaravelLogo.jpg';
+import img_sql from '@/assets/images/SqlLogo.jpg';
 import img_kubernetes from '@/assets/images/KubernetesLogo.png';
-import img_linux from '@/assets/images/LinuxLogo.png';
+import img_linux from '@/assets/images/LinuxLogo.jpg';
 const router = useRouter();
 
 const handleCardData = (data: string[]) => {
@@ -87,17 +90,4 @@ const baseCards = [
 ]
 </script>
 
-<style lang="scss" scoped>
-.select {
-    .select__wrapper {
-        .select__cards-container {
-            justify-items: center;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            column-gap: 40px;
-            row-gap: 30px;
-            margin-bottom: 40px;
-        }
-    }
-}
-</style>
+<style lang="scss" scoped></style>

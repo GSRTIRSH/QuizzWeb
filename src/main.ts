@@ -1,8 +1,29 @@
 import { createApp } from 'vue'
 import App from '@/App.vue'
 import router from '@/router/router.js'
-import '@/assets/layouts/index.scss'
+import '@/assets/css/index.scss'
+import PrimeVue from 'primevue/config';
 
-createApp(App)
-    .use(router)
-    .mount('#app')
+//primevue components
+import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
+import InputText from 'primevue/inputtext'
+import Avatar from 'primevue/avatar'
+import InputNumber from 'primevue/inputnumber'
+import Card from 'primevue/card';
+import Chip from 'primevue/chip';
+
+
+const app = createApp(App)
+
+app.component('Dialog', Dialog)
+app.component('Button', Button)
+app.component('InputText', InputText)
+app.component('Avatar', Avatar)
+app.component('InputNumber', InputNumber)
+app.component('Card', Card)
+app.component('Chip', Chip)
+
+app.use(router)
+app.use(PrimeVue);
+app.mount('#app')
