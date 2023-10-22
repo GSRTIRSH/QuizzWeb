@@ -7,7 +7,8 @@ public class QuizContextV2 : DbContext
 {
     public QuizContextV2(DbContextOptions<QuizContextV2> options) : base(options)
     {
-        //create table if not exist;
+        Database.EnsureCreated();
+        SaveChanges();
     }
 
     public DbSet<QuizV2> Quizzes { get; set; }

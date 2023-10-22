@@ -9,6 +9,7 @@ public class QuizContext : DbContext
     {
         //Database.EnsureDeleted();
         Database.EnsureCreated();
+        SaveChanges();
     }
 
     public DbSet<QuizV1> Quizzes { get; set; }

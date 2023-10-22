@@ -9,6 +9,7 @@ public class UserContext : DbContext
     {
         //Database.EnsureDeleted();
         Database.EnsureCreated();
+        SaveChanges();
     }
 
     public DbSet<User> Users { get; set; }

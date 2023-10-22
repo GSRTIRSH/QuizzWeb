@@ -39,7 +39,32 @@ public class QuizzesController : ControllerBase
 
         return quiz;
     }
+    
+    [HttpGet()]
+    public async Task<ActionResult<QuizV2>> GetQuiz(int id)
+    {
+        var quiz = await _context.Quizzes.FindAsync(id);
 
+        if (quiz == null)
+        {
+            return NotFound();
+        }
+
+        return quiz;
+    }
+
+    public async Task<ActionResult<QuizV2>> GetQuiz(int id)
+    {
+        var quiz = await _context.Quizzes.FindAsync(id);
+
+        if (quiz == null)
+        {
+            return NotFound();
+        }
+
+        return quiz;
+    }
+    
     [HttpPost]
     public async Task<ActionResult> PostQuiz(QuizV2 quiz)
     {

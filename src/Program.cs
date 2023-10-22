@@ -87,12 +87,16 @@ public class Program
         builder.Services.AddHealthChecks()
             .AddNpgSql(connectionString)
             .AddCheck<RelationHeathCheck<QuizContext>>("QuizzesTable")
-            .AddCheck<RelationHeathCheck<UserContext>>("UsersTable");
+            .AddCheck<RelationHeathCheck<UserContext>>("UsersTable")
+            .AddCheck<RelationHeathCheck<QuizContextV2>>("UsersTable2");
 
         builder.Services.AddDbContext<UserContext>(options =>
             options.UseNpgsql(connectionString));
 
         builder.Services.AddDbContext<QuizContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        builder.Services.AddDbContext<QuizContextV2>(options =>
             options.UseNpgsql(connectionString));
 
         //builder.Services.AddAuthorization();
