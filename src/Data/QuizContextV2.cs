@@ -7,6 +7,9 @@ public class QuizContextV2 : DbContext
 {
     public QuizContextV2(DbContextOptions<QuizContextV2> options) : base(options)
     {
+        Database.Migrate();
+        Database.EnsureCreated();
+        SaveChanges();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

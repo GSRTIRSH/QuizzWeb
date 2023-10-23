@@ -23,7 +23,6 @@ public class Program
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
         builder.Services.AddScoped<ApiAuthFilter>();
-        builder.Services.AddScoped<DatabaseInitializer>();
         
         builder.Services.AddSwaggerGen(options =>
         {
@@ -103,23 +102,9 @@ public class Program
         var app = builder.Build();
         app.UseCors("AllowAll");
 
-        using (var scope = app.Services.CreateScope())
-        {
-            try
-            {
-                var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
-                initializer.Initialize();
-            }
-            catch (Exception ex)
-            {
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                logger.LogError(ex, "An error occurred while initializing the database.");
-            }
-        }
+        //using (var scope = app.Services.CreateScope()) { }
 
-        if (app.Environment.IsDevelopment())
-        {
-        }
+        //if (app.Environment.IsDevelopment()) { }
 
         app.UseSwagger();
         app.UseSwaggerUI(options =>

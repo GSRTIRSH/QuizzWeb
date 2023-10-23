@@ -22,6 +22,7 @@ public class RelationHeathCheck<T> : IHealthCheck where T : DbContext
             IEnumerable<object> c = _context switch
             {
                 QuizContext quizContext => quizContext.Quizzes.ToList(),
+                QuizContextV2 quizContextV2 => quizContextV2.QuestionsV2.ToList(),
                 UserContext userContext => userContext.Users.ToList(),
                 _ => throw new NotImplementedException()
             };
