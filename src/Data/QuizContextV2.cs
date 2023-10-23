@@ -6,10 +6,10 @@ namespace QuizzWebApi.Data;
 public class QuizContextV2 : DbContext
 {
     public QuizContextV2(DbContextOptions<QuizContextV2> options) : base(options)
-    {
-        /*Database.Migrate();
+    { 
+        Database.Migrate();
         Database.EnsureCreated();
-        SaveChanges();*/
+        SaveChanges();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -7,9 +7,9 @@ public class UserContext : DbContext
 {
     public UserContext(DbContextOptions<UserContext> options) : base(options)
     {
-        /*Database.Migrate();
+        Database.Migrate();
         Database.EnsureCreated();
-        SaveChanges();*/
+        SaveChanges();
     }
 
     public DbSet<User> Users { get; set; }

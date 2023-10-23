@@ -7,9 +7,9 @@ public class QuizContext : DbContext
 {
     public QuizContext(DbContextOptions<QuizContext> options) : base(options)
     {
-        /*Database.Migrate();
+        Database.Migrate();
         Database.EnsureCreated();
-        SaveChanges();*/
+        SaveChanges();
     }
 
     public DbSet<QuestionV1> Quizzes { get; set; }
