@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations
+namespace QuizzWebApi.Migrations.User
 {
     public partial class init : Migration
     {

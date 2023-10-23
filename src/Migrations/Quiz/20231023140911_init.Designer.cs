@@ -12,7 +12,7 @@ using QuizzWebApi.Data;
 namespace QuizzWebApi.Migrations.Quiz
 {
     [DbContext(typeof(QuizContext))]
-    [Migration("20231023114035_init")]
+    [Migration("20231023140911_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

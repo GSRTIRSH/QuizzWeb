@@ -8,7 +8,7 @@ using QuizzWebApi.Data;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations.QuizContextV2Migrations
+namespace QuizzWebApi.Migrations
 {
     [DbContext(typeof(QuizContextV2))]
     partial class QuizContextV2ModelSnapshot : ModelSnapshot
@@ -25,7 +25,10 @@ namespace QuizzWebApi.Migrations.QuizContextV2Migrations
             modelBuilder.Entity("QuizzWebApi.Models.QuestionV2", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Dictionary<char, string>>("Answers")
                         .IsRequired()
@@ -37,13 +40,18 @@ namespace QuizzWebApi.Migrations.QuizContextV2Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("correct_answers");
 
+                    b.Property<int>("QuizV2Id")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("questions_v2");
+                    b.HasIndex("QuizV2Id");
+
+                    b.ToTable("questions_v2", (string)null);
                 });
 
             modelBuilder.Entity("QuizzWebApi.Models.QuizV2", b =>
@@ -76,18 +84,16 @@ namespace QuizzWebApi.Migrations.QuizContextV2Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("quizzes_v2");
+                    b.ToTable("quizzes_v2", (string)null);
                 });
 
             modelBuilder.Entity("QuizzWebApi.Models.QuestionV2", b =>
                 {
-                    b.HasOne("QuizzWebApi.Models.QuizV2", "QuizV2")
+                    b.HasOne("QuizzWebApi.Models.QuizV2", null)
                         .WithMany("Questions")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("QuizV2Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("QuizV2");
                 });
 
             modelBuilder.Entity("QuizzWebApi.Models.QuizV2", b =>

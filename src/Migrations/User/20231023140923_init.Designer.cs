@@ -9,10 +9,10 @@ using QuizzWebApi.Data;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations
+namespace QuizzWebApi.Migrations.User
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20231023114018_init")]
+    [Migration("20231023140923_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

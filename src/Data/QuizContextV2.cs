@@ -7,17 +7,17 @@ public class QuizContextV2 : DbContext
 {
     public QuizContextV2(DbContextOptions<QuizContextV2> options) : base(options)
     {
-        Database.Migrate();
+        /*Database.Migrate();
         Database.EnsureCreated();
-        SaveChanges();
+        SaveChanges();*/
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<QuizV2>()
-            .HasMany(a => a.Questions)
-            .WithOne(b => b.QuizV2)
-            .HasForeignKey(b => b.Id);
+            .HasMany(q => q.Questions)
+            .WithOne()
+            .HasForeignKey(q => q.QuizV2Id);
     }
 
     public DbSet<QuizV2> Quizzes { get; set; }

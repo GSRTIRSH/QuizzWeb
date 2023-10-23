@@ -8,7 +8,7 @@ using QuizzWebApi.Data;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations
+namespace QuizzWebApi.Migrations.User
 {
     [DbContext(typeof(UserContext))]
     partial class UserContextModelSnapshot : ModelSnapshot

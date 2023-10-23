@@ -8,8 +8,8 @@ using QuizzWebApi.Data;
 namespace QuizzWebApi.Controllers.v1;
 
 [ApiController]
-[ApiVersion("1.0", Deprecated = true)]
 [QuizExceptionFilter]
+[ApiVersion("1.0", Deprecated = true)]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ServiceFilter(typeof(ApiAuthFilter))]
 public class QuizzesController : ControllerBase
@@ -32,12 +32,12 @@ public class QuizzesController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(category))
         {
-            query = query.Where(q => q.Category.Equals(category, StringComparison.CurrentCultureIgnoreCase));
+            query = query.Where(q => q.Category.ToLower().Equals(category.ToLower()));
         }
 
         if (!string.IsNullOrWhiteSpace(difficulty))
         {
-            query = query.Where(q => q.Difficulty.Equals(difficulty, StringComparison.CurrentCultureIgnoreCase));
+            query = query.Where(q => q.Difficulty.ToLower().Equals(difficulty.ToLower()));
         }
 
         var result = await query.Take(limit).ToListAsync();
@@ -59,7 +59,7 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostQuiz(QuestionV1 question)
+    public async Task<ActionResult> PostQuestion(QuestionV1 question)
     {
         _context.Quizzes.Add(question);
         await _context.SaveChangesAsync();

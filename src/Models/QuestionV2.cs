@@ -21,6 +21,5 @@ public class QuestionV2
     [Column("correct_answers", TypeName = "jsonb")] 
     public Dictionary<char, string> CorrectAnswers { get; set; }
     
-    [Required]
-    public QuizV2 QuizV2 { get; set; }
+    public int QuizV2Id { get; set; }
 }

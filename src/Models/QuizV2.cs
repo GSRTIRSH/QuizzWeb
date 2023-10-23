@@ -16,8 +16,7 @@ public class QuizV2
     [Required]
     [Column("image_path")]
     public string ImagePath { get; set; }
-
-    [Required]
+    
     public List<QuestionV2> Questions { get; set; }
     
     /*[Required]
@@ -31,8 +30,4 @@ public class QuizV2
     
     [Required]
     public int Author { get; set; }
-    
-    /*[Required]
-    [Column("quiz_id")]
-    public string QuizId { get; set; }*/
 }
