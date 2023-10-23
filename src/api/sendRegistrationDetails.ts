@@ -26,14 +26,14 @@ export const sendRegistrationDetails = async (label1: string, label2: string): P
     {
         method: 'POST',
         headers: {
-
+            'x-api-key': '46BB6D176C0A4B56BA67B6A65CEBDA75',
             "Content-Type": "application/json",
         },
         body: JSON.stringify(credentials),
     };
 
     //http post
-    const response: void = await fetch(`${config.YC_API_URL}/shit`, requestOptions)
+    const response: void = await fetch(`${config.API_URL}/health`, requestOptions)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');

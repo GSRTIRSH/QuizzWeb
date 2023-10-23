@@ -1,7 +1,3 @@
-// #app {
-//   z-index: -30;
-// }
-
 body::-webkit-scrollbar {
   display: none;
 }
@@ -33,4 +29,14 @@ img {
         2px -2px 0 #000, 
         -2px 2px 0 #000, 
         2px 2px 0 #000;
+}
+
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.15s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
 }

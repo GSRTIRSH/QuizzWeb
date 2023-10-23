@@ -1,6 +1,5 @@
 <template>
     <div>
-        <div class="page-bg"></div>
         <div class="animation-wrapper">
             <div class="particle particle-1"></div>
             <div class="particle particle-2"></div>

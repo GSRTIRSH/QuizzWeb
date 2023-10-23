@@ -10,8 +10,9 @@ import Dialog from 'primevue/dialog'
 import InputText from 'primevue/inputtext'
 import Avatar from 'primevue/avatar'
 import InputNumber from 'primevue/inputnumber'
-import Card from 'primevue/card';
-import Chip from 'primevue/chip';
+import Card from 'primevue/card'
+import Chip from 'primevue/chip'
+import InlineMessage from 'primevue/inlinemessage'
 
 
 const app = createApp(App)
@@ -23,6 +24,7 @@ app.component('Avatar', Avatar)
 app.component('InputNumber', InputNumber)
 app.component('Card', Card)
 app.component('Chip', Chip)
+app.component('InlineMessage', InlineMessage)
 
 app.use(router)
 app.use(PrimeVue);

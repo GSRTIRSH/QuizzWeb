@@ -1,53 +1,55 @@
 <template>
-    <div class="preloader">
-        <div class="preloader__row">
-            <div class="preloader__item"></div>
-            <div class="preloader__item"></div>
-        </div>
+    <div class="lds">
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
 </template>
 
 <style scoped lang="scss">
-.preloader {
-    position: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-}
-
-.preloader__row {
-    position: relative;
+.lds {
+    display: inline-block;
+    position: absolute;
+    width: 80px;
+    height: 80px;
     top: 50%;
     left: 50%;
-    width: 70px;
-    height: 70px;
-    margin-top: -35px;
-    margin-left: -35px;
-    text-align: center;
-    animation: preloader-rotate 2s infinite linear;
+    transform: translate(-50%, -50%);
 }
 
-.preloader__item {
-    border: 2px solid #000;
-    position: absolute;
+.lds div {
     display: inline-block;
-    top: 0;
-    background-color: $base-orange;
-    width: 17px;
-    height: 17px;
-
-    &:last-child {
-        top: auto;
-        bottom: 0;
-        animation-delay: -1s;
-    }
+    position: absolute;
+    left: 8px;
+    width: 16px;
+    background: $base-orange;
+    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
 }
 
-@keyframes preloader-rotate {
+.lds div:nth-child(1) {
+    left: 8px;
+    animation-delay: -0.24s;
+}
+
+.lds div:nth-child(2) {
+    left: 32px;
+    animation-delay: -0.12s;
+}
+
+.lds div:nth-child(3) {
+    left: 56px;
+    animation-delay: 0;
+}
+
+@keyframes lds-facebook {
+    0% {
+        top: 8px;
+        height: 64px;
+    }
+    50%,
     100% {
-        transform: rotate(360deg);
+        top: 24px;
+        height: 32px;
     }
 }
 </style>
