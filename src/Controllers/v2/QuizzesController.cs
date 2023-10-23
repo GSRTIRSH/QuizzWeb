@@ -34,21 +34,32 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpGet("quiz")]
-    public async Task<ActionResult<QuizV2>> GetQuiz(
+    public async Task<IEnumerable<QuizV2>> GetQuiz(
         [FromQuery] int? id,
         [FromQuery] string? category,
         [FromQuery] string? difficulty)
     {
-        var query = _context.Quizzes.AsQueryable().Include(q => q.Questions);
+        var query = _context.Quizzes.Include(q => q.Questions).AsQueryable();
 
-        var quiz = query.ToList().Find(q => q.Id == id);
-
-        if (quiz == null)
+        if (!string.IsNullOrEmpty(category))
         {
-            return NotFound();
+            query = query.Where(q => q.Category.ToLower().Equals(category.ToLower()));
+        }
+        
+        if (!string.IsNullOrEmpty(difficulty))
+        {
+            query = query.Where(q => q.Difficulty.ToLower().Equals(difficulty.ToLower()));
+        }
+        
+        
+        if (id is not null)
+        {
+            return await query.Where(q => q.Id == id).ToListAsync();   
         }
 
-        return quiz;
+        return await query.ToListAsync();
+
+
     }
 
     [HttpGet("question")]
