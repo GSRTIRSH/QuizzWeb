@@ -3,8 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace QuizzWebApi.Models;
 
-[Table("quizzesv1")]
-public class QuizV1
+[Table("questions_v1")]
+public class QuestionV1
 {
     [Key] 
     [Column("id")]
@@ -46,53 +46,4 @@ public class QuizV1
     [Required]
     [Column("difficulty")] 
     public string Difficulty { get; set; }
-}
-
-[Table("quizzesv2")]
-public class QuizV2
-{
-    [Key] 
-    [Column("id")]
-    public int Id { get; set; }
-
-    [Required]
-    [Column("question")]
-    public string Question { get; set; }
-    
-    [Required]
-    [Column("image_path")]
-    public string ImagePath { get; set; }
-    
-    [Column("description")]
-    public string? Description { get; set; }
-
-    [Required]
-    [Column("answers", TypeName = "jsonb")]
-    public Dictionary<char, string> Answers { get; set; }
-    
-    [Required]
-    [Column("correct_answers", TypeName = "jsonb")]
-    public Dictionary<char, string> CorrectAnswers { get; set; }
-    
-    [Column("explanation")] 
-    public string? Explanation { get; set; }
-    
-    [Column("tip")] 
-    public string? Tip { get; set; }
-    
-    [Required]
-    [Column("tags")] 
-    public int[] Tags { get; set; }
-    
-    [Required]
-    [Column("category")] 
-    public string Category { get; set; }
-
-    [Required]
-    [Column("difficulty")] 
-    public string Difficulty { get; set; }
-    
-    [Required]
-    [Column("author")] 
-    public int? Author { get; set; }
 }

@@ -1,6 +1,9 @@
+using System.Security.Cryptography;
+using System.Text;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using QuizzWebApi.Configuration.Filters;
+using QuizzWebApi.Models;
 
 namespace QuizzWebApi.Controllers;
 
@@ -12,9 +15,10 @@ public class AuthController : ControllerBase
 {
     [HttpGet]
     [MapToApiVersion("1.0")]
+    //get user
     public IActionResult TestV1()
     {
-        return Ok("auth v1");
+        return Ok("hashString");
     }
 
     [HttpGet]

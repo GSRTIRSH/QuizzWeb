@@ -8,7 +8,7 @@ using QuizzWebApi.Data;
 namespace QuizzWebApi.Controllers.v1;
 
 [ApiController]
-[ApiVersion("1.0")]
+[ApiVersion("1.0", Deprecated = true)]
 [QuizExceptionFilter]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ServiceFilter(typeof(ApiAuthFilter))]
@@ -22,13 +22,31 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<QuizV1>> GetQuizzes()
+    public async Task<IEnumerable<QuestionV1>> GetQuizzes(
+        [FromQuery] int limit = 1,
+        [FromQuery] string? category = "",
+        /*[FromQuery] string tags = "",*/
+        [FromQuery] string? difficulty = "")
     {
-        return await _context.Quizzes.ToListAsync();
+        var query = _context.Quizzes.AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(category))
+        {
+            query = query.Where(q => q.Category.Equals(category, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        if (!string.IsNullOrWhiteSpace(difficulty))
+        {
+            query = query.Where(q => q.Difficulty.Equals(difficulty, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        var result = await query.Take(limit).ToListAsync();
+
+        return result;
     }
 
     [HttpGet("id:{id:int}")]
-    public async Task<ActionResult<QuizV1>> GetQuiz(int id)
+    public async Task<ActionResult<QuestionV1>> GetQuiz(int id)
     {
         var quiz = await _context.Quizzes.FindAsync(id);
 
@@ -41,11 +59,11 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostQuiz(QuizV1 quiz)
+    public async Task<ActionResult> PostQuiz(QuestionV1 question)
     {
-        _context.Quizzes.Add(quiz);
+        _context.Quizzes.Add(question);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetQuiz), new { id = quiz.Id }, quiz);
+        return CreatedAtAction(nameof(GetQuiz), new { id = question.Id }, question);
     }
 }

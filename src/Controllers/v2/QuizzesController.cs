@@ -39,9 +39,10 @@ public class QuizzesController : ControllerBase
 
         return quiz;
     }
-    
+
+    /*
     [HttpGet()]
-    /*public async Task<ActionResult<QuizV2>> GetQuiz(int id)
+    public async Task<ActionResult<QuizV2>> GetQuiz(int id)
     {
         var quiz = await _context.Quizzes.FindAsync(id);
 
@@ -64,13 +65,13 @@ public class QuizzesController : ControllerBase
 
         return quiz;
     }*/
-    
+
     [HttpPost]
-    public async Task<ActionResult> PostQuiz(QuizV2 quiz)
+    public async Task<ActionResult> PostQuiz(QuizV2 quizV2)
     {
-        _context.Quizzes.Add(quiz);
+        _context.Quizzes.Add(quizV2);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetQuiz), new { id = quiz.Id }, quiz);
+        return CreatedAtAction(nameof(GetQuiz), new { id = quizV2.Id }, quizV2);
     }
 }

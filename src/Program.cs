@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
 using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
-using QuizzWebApi.Models;
+using QuizzWebApi.Services;
 using QuizzWebApi.Services.Health;
 
 namespace QuizzWebApi;
@@ -17,16 +17,14 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        //var port = Environment.GetEnvironmentVariable("PORT") ?? "5200";
-
         builder.Services.AddControllers();
-        builder.Services.AddControllers(options => { options.Filters.Add(new MyFilter()); });
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
         builder.Services.AddScoped<ApiAuthFilter>();
-
+        builder.Services.AddScoped<DatabaseInitializer>();
+        
         builder.Services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
@@ -84,12 +82,6 @@ public class Program
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-        builder.Services.AddHealthChecks()
-            .AddNpgSql(connectionString)
-            .AddCheck<RelationHeathCheck<QuizContext>>("QuizzesTable")
-            .AddCheck<RelationHeathCheck<UserContext>>("UsersTable")
-            .AddCheck<RelationHeathCheck<QuizContextV2>>("UsersTable2");
-
         builder.Services.AddDbContext<UserContext>(options =>
             options.UseNpgsql(connectionString));
 
@@ -99,21 +91,31 @@ public class Program
         builder.Services.AddDbContext<QuizContextV2>(options =>
             options.UseNpgsql(connectionString));
 
+        builder.Services.AddHealthChecks()
+            .AddNpgSql(connectionString)
+            .AddCheck<RelationHeathCheck<QuizContext>>(nameof(QuizContext))
+            .AddCheck<RelationHeathCheck<QuizContextV2>>(nameof(QuizContextV2))
+            .AddCheck<RelationHeathCheck<UserContext>>(nameof(UserContext));
+
         //builder.Services.AddAuthorization();
         //builder.Services.AddAuthentication();
 
         var app = builder.Build();
         app.UseCors("AllowAll");
 
-        // Configure the HTTP request pipeline.
-
-        /*using (var scope = app.Services.CreateScope())
+        using (var scope = app.Services.CreateScope())
         {
-            var context = scope.ServiceProvider.GetRequiredService<UserContext>();
-            context.Database.EnsureDeleted();
-            var context2 = scope.ServiceProvider.GetRequiredService<QuizContext>();
-            context2.Database.EnsureDeleted();
-        }*/
+            try
+            {
+                var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
+                initializer.Initialize();
+            }
+            catch (Exception ex)
+            {
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                logger.LogError(ex, "An error occurred while initializing the database.");
+            }
+        }
 
         if (app.Environment.IsDevelopment())
         {
@@ -130,14 +132,6 @@ public class Program
                 var name = $"{description.GroupName}";
                 options.SwaggerEndpoint(url, name);
             }
-        });
-
-        //check if api is working
-        app.MapGet("api/", async c =>
-        {
-            c.Response.StatusCode = StatusCodes.Status200OK;
-            c.Response.ContentType = "text/plain";
-            await c.Response.WriteAsync("Api response");
         });
 
         app.MapHealthChecks("api/health", new HealthCheckOptions

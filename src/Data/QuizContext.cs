@@ -7,10 +7,7 @@ public class QuizContext : DbContext
 {
     public QuizContext(DbContextOptions<QuizContext> options) : base(options)
     {
-        //Database.EnsureDeleted();
-        Database.EnsureCreated();
-        SaveChanges();
     }
 
-    public DbSet<QuizV1> Quizzes { get; set; }
+    public DbSet<QuestionV1> Quizzes { get; set; }
 }
