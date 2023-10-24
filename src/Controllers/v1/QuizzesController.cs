@@ -59,6 +59,7 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpPost]
+    [RequireApiKey(isAdminKey: true)]
     public async Task<ActionResult> PostQuestion(QuestionV1 question)
     {
         _context.Quizzes.Add(question);

@@ -51,15 +51,12 @@ public class QuizzesController : ControllerBase
             query = query.Where(q => q.Difficulty.ToLower().Equals(difficulty.ToLower()));
         }
         
-        
         if (id is not null)
         {
             return await query.Where(q => q.Id == id).ToListAsync();   
         }
 
         return await query.ToListAsync();
-
-
     }
 
     [HttpGet("question")]
@@ -76,6 +73,7 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpPost("q1")]
+    [RequireApiKey(isAdminKey: true)]
     public async Task<ActionResult> PostQuiz(QuizV2 quizV2)
     {
         _context.Quizzes.Add(quizV2);
@@ -85,6 +83,7 @@ public class QuizzesController : ControllerBase
     }
 
     [HttpPost("q2")]
+    [RequireApiKey(isAdminKey: true)]
     public async Task<ActionResult> PostQuestionV2(QuestionV2 question)
     {
         //question.Id = Guid.NewGuid();

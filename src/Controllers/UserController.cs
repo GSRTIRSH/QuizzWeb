@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
 using QuizzWebApi.Models;
+using QuizzWebApi.Repository;
 
 namespace QuizzWebApi.Controllers;
 
@@ -12,25 +13,27 @@ namespace QuizzWebApi.Controllers;
 [ServiceFilter(typeof(ApiAuthFilter))]
 public class UserController : ControllerBase
 {
-    private readonly UserContext _context;
+    //private readonly UserContext _context;
+    private readonly IUserRepository _repository;
 
-    public UserController(UserContext context)
+    public UserController(IUserRepository repository)
     {
-        _context = context;
+        //_context = context;
+        _repository = repository;
     }
 
     //GET: api/user
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
-        return await _context.Users.ToListAsync();
+        return await _repository.GetUsersAsync();
     }
 
     // GET: api/user/5
     [HttpGet("{id:int}")]
     public async Task<ActionResult<User>> GetUser(int id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = await _repository.GetUserAsync(0);
 
         if (user == null)
         {
@@ -44,8 +47,8 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<User>> PostUser(User user)
     {
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        await _repository.PostUserAsync(user);
+        await _repository.SaveAsync();
 
         return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
     }
@@ -59,8 +62,10 @@ public class UserController : ControllerBase
             return BadRequest();
         }
 
-        _context.Entry(user).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        //_context.Entry(user).State = EntityState.Modified;
+
+        await _repository.UpdateUserAsync(user);
+        await _repository.SaveAsync();
 
         return NoContent();
     }
@@ -69,15 +74,8 @@ public class UserController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        var user = await _context.Users.FindAsync(id);
-
-        if (user == null)
-        {
-            return NotFound();
-        }
-
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
+        await _repository.DeleteUserAsync(id);
+        await _repository.SaveAsync();
 
         return NoContent();
     }

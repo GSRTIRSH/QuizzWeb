@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
 using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
-using QuizzWebApi.Services;
+using QuizzWebApi.Repository;
 using QuizzWebApi.Services.Health;
 
 namespace QuizzWebApi;
@@ -23,6 +23,7 @@ public class Program
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
         builder.Services.AddScoped<ApiAuthFilter>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         
         builder.Services.AddSwaggerGen(options =>
         {

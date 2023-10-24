@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace QuizzWebApi.Configuration.Filters;
@@ -14,16 +15,45 @@ public class ApiAuthFilter : IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
+        var action = context.ActionDescriptor as ControllerActionDescriptor;
+
+        var requireApiKeyAttribute = action?.MethodInfo.GetCustomAttributes(typeof(RequireApiKeyAttribute), false);
+
+        RequireApiKeyAttribute? c = null;
+
+        c = requireApiKeyAttribute?.SingleOrDefault() as RequireApiKeyAttribute;
+
+        var isAdmin = c?.IsAdminKey ?? false;
+
         if (!context.HttpContext.Request.Headers.TryGetValue("X-Api-Key", out var key))
         {
             context.Result = new UnauthorizedObjectResult("Missing API Token");
             return;
         }
 
+        var adminKey = _configuration.GetValue<string>("Authentication:ApiKeyAdmin");
         var apiKey = _configuration.GetValue<string>("Authentication:ApiKey");
-        if (!apiKey.Equals(key))
+
+        if (isAdmin)
         {
-            context.Result = new UnauthorizedObjectResult("Invalid API Token");
+            if (adminKey.Equals(key)) return;
         }
+        else
+        {
+            if (apiKey.Equals(key) || adminKey.Equals(key)) return;
+        }
+
+        context.Result = new UnauthorizedObjectResult("Invalid API Token");
+    }
+}
+
+[AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+public class RequireApiKeyAttribute : Attribute
+{
+    public bool IsAdminKey { get; }
+
+    public RequireApiKeyAttribute(bool isAdminKey = false)
+    {
+        IsAdminKey = isAdminKey;
     }
 }
