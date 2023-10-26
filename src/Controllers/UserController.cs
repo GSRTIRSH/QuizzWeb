@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizzWebApi.Configuration.Filters;
@@ -11,6 +13,7 @@ namespace QuizzWebApi.Controllers;
 [QuizExceptionFilter]
 [Route("api/[controller]")]
 [ServiceFilter(typeof(ApiAuthFilter))]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class UserController : ControllerBase
 {
     //private readonly UserContext _context;
@@ -57,10 +60,10 @@ public class UserController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> PutUser(int id, User user)
     {
-        if (id != user.Id)
+        /*if (id.ToString() != user.Id)
         {
             return BadRequest();
-        }
+        }*/
 
         //_context.Entry(user).State = EntityState.Modified;
 

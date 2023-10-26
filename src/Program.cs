@@ -1,7 +1,11 @@
+using System.Text;
 using Asp.Versioning;
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
 using QuizzWebApi.Configuration.Filters;
@@ -24,7 +28,47 @@ public class Program
 
         builder.Services.AddScoped<ApiAuthFilter>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+        #region JWT
+
+        //builder.Services.
         
+        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+        {
+            options.SignIn.RequireConfirmedAccount = false;
+            
+        }).AddEntityFrameworkStores<IdentityContext>();
+
+        builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
+
+        builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(jwt =>
+            {
+                var key = Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+                jwt.SaveToken = true;
+                
+                
+                jwt.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RequireExpirationTime = false,
+                    ValidateLifetime = false
+                };
+            });
+
+        builder.Services.AddAuthorization();
+
+        #endregion
+
         builder.Services.AddSwaggerGen(options =>
         {
             options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
@@ -82,6 +126,9 @@ public class Program
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+
+        #region DbContext
+
         builder.Services.AddDbContext<UserContext>(options =>
             options.UseNpgsql(connectionString));
 
@@ -91,11 +138,17 @@ public class Program
         builder.Services.AddDbContext<QuizContextV2>(options =>
             options.UseNpgsql(connectionString));
 
+        builder.Services.AddDbContext<IdentityContext>(options =>
+            options.UseNpgsql(connectionString));
+
+        #endregion
+
         builder.Services.AddHealthChecks()
             .AddNpgSql(connectionString)
             .AddCheck<RelationHeathCheck<QuizContext>>(nameof(QuizContext))
             .AddCheck<RelationHeathCheck<QuizContextV2>>(nameof(QuizContextV2))
-            .AddCheck<RelationHeathCheck<UserContext>>(nameof(UserContext));
+            .AddCheck<RelationHeathCheck<UserContext>>(nameof(UserContext))
+            .AddCheck<RelationHeathCheck<IdentityContext>>(nameof(IdentityContext));
 
         //builder.Services.AddAuthorization();
         //builder.Services.AddAuthentication();

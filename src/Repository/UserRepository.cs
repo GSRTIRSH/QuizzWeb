@@ -34,8 +34,8 @@ public class UserRepository : IUserRepository
         if (userDb == null) return;
 
         userDb.Email = user.Email;
-        userDb.FirstName = user.FirstName;
-        userDb.SubName = user.SubName;
+        /*userDb.FirstName = user.FirstName;
+        userDb.SubName = user.SubName;*/
         userDb.PasswordHash = user.PasswordHash;
     }
 

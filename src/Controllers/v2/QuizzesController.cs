@@ -1,4 +1,6 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizzWebApi.Configuration.Filters;
@@ -12,6 +14,7 @@ namespace QuizzWebApi.Controllers.v2;
 [QuizExceptionFilter]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ServiceFilter(typeof(ApiAuthFilter))]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class QuizzesController : ControllerBase
 {
     private readonly QuizContextV2 _context;

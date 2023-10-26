@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using QuizzWebApi.Data;
@@ -24,6 +25,7 @@ public class RelationHeathCheck<T> : IHealthCheck where T : DbContext
                 QuizContext quizContext => quizContext.Quizzes.ToList(),
                 QuizContextV2 quizContextV2 => quizContextV2.QuestionsV2.ToList(),
                 UserContext userContext => userContext.Users.ToList(),
+                IdentityContext identityContext => identityContext.Users.ToList(),
                 _ => throw new NotImplementedException()
             };
             return Task.FromResult(HealthCheckResult.Healthy());
