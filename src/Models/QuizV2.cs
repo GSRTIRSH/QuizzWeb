@@ -29,5 +29,5 @@ public class QuizV2
     public string Difficulty { get; set; }
     
     [Required]
-    public int Author { get; set; }
+    public string Author { get; set; }
 }

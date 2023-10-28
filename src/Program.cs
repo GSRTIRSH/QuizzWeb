@@ -19,26 +19,23 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers();
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
         builder.Services.AddScoped<ApiAuthFilter>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-
         #region JWT
 
-        //builder.Services.
-        
         builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
-        {
-            options.SignIn.RequireConfirmedAccount = false;
-            
-        }).AddEntityFrameworkStores<IdentityContext>();
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+            }).AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<IdentityContext>();
 
         builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
@@ -52,8 +49,6 @@ public class Program
             {
                 var key = Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
                 jwt.SaveToken = true;
-                
-                
                 jwt.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
@@ -186,6 +181,9 @@ public class Program
 
         app.MapControllers();
 
+
         app.Run();
+
+
     }
 }

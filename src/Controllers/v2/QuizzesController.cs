@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,7 @@ namespace QuizzWebApi.Controllers.v2;
 [QuizExceptionFilter]
 [Route("api/v{version:apiVersion}/[controller]")]
 [ServiceFilter(typeof(ApiAuthFilter))]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme/*, Roles = "User"*/)]
 public class QuizzesController : ControllerBase
 {
     private readonly QuizContextV2 _context;
@@ -48,15 +49,15 @@ public class QuizzesController : ControllerBase
         {
             query = query.Where(q => q.Category.ToLower().Equals(category.ToLower()));
         }
-        
+
         if (!string.IsNullOrEmpty(difficulty))
         {
             query = query.Where(q => q.Difficulty.ToLower().Equals(difficulty.ToLower()));
         }
-        
+
         if (id is not null)
         {
-            return await query.Where(q => q.Id == id).ToListAsync();   
+            return await query.Where(q => q.Id == id).ToListAsync();
         }
 
         return await query.ToListAsync();
@@ -75,7 +76,7 @@ public class QuizzesController : ControllerBase
         return quiz;
     }
 
-    [HttpPost("q1")]
+    [HttpPost("quiz")]
     [RequireApiKey(isAdminKey: true)]
     public async Task<ActionResult> PostQuiz(QuizV2 quizV2)
     {
@@ -85,7 +86,7 @@ public class QuizzesController : ControllerBase
         return CreatedAtAction(nameof(GetQuiz), new { id = quizV2.Id }, quizV2);
     }
 
-    [HttpPost("q2")]
+    [HttpPost("question")]
     [RequireApiKey(isAdminKey: true)]
     public async Task<ActionResult> PostQuestionV2(QuestionV2 question)
     {
@@ -95,5 +96,50 @@ public class QuizzesController : ControllerBase
         await _context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetQuestionV2), new { id = question.Id }, question);
+    }
+
+    [HttpPatch("update/{id}")]
+    public IActionResult UpdateData(int id, [FromBody] JsonElement json)
+    {
+        var quiz = _context.Quizzes.Find(id);
+
+
+        if (quiz == null)
+        {
+            return NotFound();
+        }
+
+        var updateData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json.ToString());
+
+        if (updateData == null) return BadRequest();
+
+        if (updateData.ContainsKey("title"))
+        {
+            quiz.Title = updateData["title"].GetString();
+        }
+
+        if (updateData.ContainsKey("imagePath"))
+        {
+            quiz.ImagePath = updateData["imagePath"].GetString();
+        }
+
+        if (updateData.ContainsKey("category"))
+        {
+            quiz.Category = updateData["category"].GetString();
+        }
+
+        if (updateData.ContainsKey("difficulty"))
+        {
+            quiz.Difficulty = updateData["difficulty"].GetString();
+        }
+
+        if (updateData.ContainsKey("author"))
+        {
+            quiz.Author = updateData["author"].GetString();
+        }
+
+        _context.SaveChangesAsync();
+
+        return Ok();
     }
 }

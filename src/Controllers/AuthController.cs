@@ -1,15 +1,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.IO;
 using System.Text;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using QuizzWebApi.Configuration;
-using QuizzWebApi.Configuration.Filters;
-using QuizzWebApi.Models;
 using QuizzWebApi.Models.Identity;
 
 namespace QuizzWebApi.Controllers;
@@ -23,75 +23,169 @@ public class AuthController : ControllerBase
     private readonly ILogger<AuthController> _logger;
 
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
 
     private readonly JwtConfig _jwtConfig;
 
     public AuthController(ILogger<AuthController> logger,
         UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
         IOptionsMonitor<JwtConfig> optionsMonitor)
     {
         _logger = logger;
         _userManager = userManager;
+        _roleManager = roleManager;
         _jwtConfig = optionsMonitor.CurrentValue;
     }
 
     [HttpGet]
-    //get user
-    public IActionResult TestV1()
+    [Route("swagger")]
+    public AuthResult GetResponse()
     {
-        return Ok("hashString");
+        return new AuthResult();
+    }
+
+    [HttpGet("user")]
+    public async Task<UserDto> GetUser(string? id)
+    {
+        var u = await _userManager.FindByIdAsync(id);
+
+        var roles = await _userManager.GetRolesAsync(u);
+
+        //var c = roles.Select(q => q.ToList()).ToList();
+
+        var userDto = new UserDto()
+        {
+            Id = u.Id,
+            UserName = u.UserName,
+            Email = u.Email,
+            EmailConfirmed = u.EmailConfirmed,
+            Roles = roles.ToList(),
+        };
+
+        return userDto;
+    }
+
+    [HttpGet]
+    public async Task<List<UserDto>> Get()
+    {
+        var users = await _userManager.Users.ToListAsync();
+
+        var usersDto = new List<UserDto>();
+
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var userDto = new UserDto
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                EmailConfirmed = user.EmailConfirmed,
+                Roles = roles.ToList()
+            };
+
+            usersDto.Add(userDto);
+        }
+
+        return usersDto;
     }
 
     [HttpPost]
     [Route("Register")]
     public async Task<IActionResult> Register([FromBody] UserRegistrationDto registrationDto)
     {
-        if (!ModelState.IsValid) return BadRequest("invalid data");
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new RegistrationRequestResponse()
+            {
+                Result = false,
+                Errors = new List<string>() { "Invalid ModelState values" }
+            });
+        }
 
         var emailExists = await _userManager.FindByEmailAsync(registrationDto.Email);
 
-        if (emailExists != null) return BadRequest("email already exists");
+        if (emailExists != null)
+            return BadRequest(new RegistrationRequestResponse()
+            {
+                Result = false,
+                Errors = new List<string>() { "email already exists" }
+            });
 
         var newUser = new IdentityUser()
         {
             Email = registrationDto.Email,
             UserName = registrationDto.Name,
-            //NormalizedUserName = ,
-            //NormalizedEmail = ,
         };
 
+
+        var roleExist = await _roleManager.RoleExistsAsync("User");
+        if (!roleExist)
+        {
+            var roleResult = await _roleManager.CreateAsync(new IdentityRole("User"));
+        }
+
         var isCreated = await _userManager.CreateAsync(newUser, registrationDto.Password);
+        var isRoleAssigned = IdentityResult.Failed();
 
         if (isCreated.Succeeded)
         {
-            return Ok(new RegistrationRequestResponse()
+            isRoleAssigned = await _userManager.AddToRoleAsync(newUser, "User");
+
+            if (isRoleAssigned.Succeeded)
             {
-                Result = true,
-                Token = GenerateJwtToken(newUser)
-            });
+                return Ok(new RegistrationRequestResponse()
+                {
+                    Result = true,
+                    Id = newUser.Id,
+                    Token = GenerateJwtToken(newUser)
+                });
+            }
         }
 
-        return BadRequest("error creating the user");
+        var e1 = isCreated.Errors.Select(e => e.Description);
+        var e2 = isRoleAssigned.Errors.Select(e => e.Description);
+
+        var errors = e1.Concat(e2).ToList();
+
+        return BadRequest(new RegistrationRequestResponse()
+        {
+            Result = false,
+            Errors = errors
+        });
     }
-    
+
     [HttpPost]
     [Route("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
     {
-        if (!ModelState.IsValid) return BadRequest("invalid data");
+        if (!ModelState.IsValid)
+            return BadRequest("invalid data");
 
         //var e = _userManager.FindByEmailAsync(loginDto.Email);
         var exitingUser = await _userManager.FindByNameAsync(loginDto.Name);
 
-        if (exitingUser == null) return BadRequest("Invalid login or password");
+        if (exitingUser == null)
+            return BadRequest(new RegistrationRequestResponse()
+            {
+                Result = false,
+                Errors = new List<string>() { "Invalid login or password" }
+            });
 
         var isPasswordValid = await _userManager.CheckPasswordAsync(exitingUser, loginDto.Password);
 
-        if (!isPasswordValid) return BadRequest("Invalid login or password");
-        
+        if (!isPasswordValid)
+            return BadRequest(new RegistrationRequestResponse()
+            {
+                Result = false,
+                Errors = new List<string>() { "Invalid login or password" }
+            });
+
         return Ok(new LoginRequestResponse()
         {
             Token = GenerateJwtToken(exitingUser),
+            Id = exitingUser.Id,
             Result = true
         });
     }
