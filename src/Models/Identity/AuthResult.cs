@@ -1,6 +1,6 @@
 namespace QuizzWebApi.Models.Identity;
 
-public class AuthResult
+public abstract class AuthResult
 {
     public string Token { get; set; }
 

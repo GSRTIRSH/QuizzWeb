@@ -48,7 +48,7 @@ public class QuizzesController : ControllerBase
         return result;
     }
 
-    [HttpGet("id:{id:int}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<QuestionV1>> GetQuiz(int id)
     {
         var quiz = await _context.Quizzes.FindAsync(id);

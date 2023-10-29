@@ -1,7 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.IO;
 using System.Text;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Identity;
@@ -38,21 +36,22 @@ public class AuthController : ControllerBase
         _jwtConfig = optionsMonitor.CurrentValue;
     }
 
+    /*
     [HttpGet]
     [Route("swagger")]
     public AuthResult GetResponse()
     {
-        return new AuthResult();
+        return new LoginRequestResponse();
     }
+    */
 
-    [HttpGet("user")]
-    public async Task<UserDto> GetUser(string? id)
+    [HttpGet()]
+    [Route("user")]
+    public async Task<UserDto> GetUser([FromQuery] string id)
     {
         var u = await _userManager.FindByIdAsync(id);
 
         var roles = await _userManager.GetRolesAsync(u);
-
-        //var c = roles.Select(q => q.ToList()).ToList();
 
         var userDto = new UserDto()
         {
@@ -93,7 +92,7 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("Register")]
-    public async Task<IActionResult> Register([FromBody] UserRegistrationDto registrationDto)
+    public async Task<ActionResult<AuthResult>> Register([FromBody] UserRegistrationDto registrationDto)
     {
         if (!ModelState.IsValid)
         {
@@ -135,12 +134,12 @@ public class AuthController : ControllerBase
 
             if (isRoleAssigned.Succeeded)
             {
-                return Ok(new RegistrationRequestResponse()
+                return new RegistrationRequestResponse()
                 {
                     Result = true,
                     Id = newUser.Id,
                     Token = GenerateJwtToken(newUser)
-                });
+                };
             }
         }
 
@@ -158,12 +157,11 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
+    public async Task<ActionResult<AuthResult>> Login([FromBody] UserLoginDto loginDto)
     {
         if (!ModelState.IsValid)
             return BadRequest("invalid data");
 
-        //var e = _userManager.FindByEmailAsync(loginDto.Email);
         var exitingUser = await _userManager.FindByNameAsync(loginDto.Name);
 
         if (exitingUser == null)
@@ -182,12 +180,12 @@ public class AuthController : ControllerBase
                 Errors = new List<string>() { "Invalid login or password" }
             });
 
-        return Ok(new LoginRequestResponse()
+        return new LoginRequestResponse()
         {
             Token = GenerateJwtToken(exitingUser),
             Id = exitingUser.Id,
             Result = true
-        });
+        };
     }
 
     private string GenerateJwtToken(IdentityUser user)
