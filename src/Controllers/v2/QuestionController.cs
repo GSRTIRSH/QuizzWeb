@@ -32,7 +32,7 @@ public class QuestionController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<QuestionV2>> GetQuestionV2([FromQuery] int id)
+    public async Task<ActionResult<QuestionV2>> GetQuestionV2(int id)
     {
         var quiz = await _context.QuestionsV2.FindAsync(id);
         if (quiz == null) return NotFound();

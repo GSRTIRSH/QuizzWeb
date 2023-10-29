@@ -27,7 +27,7 @@ public class QuizzesController : ControllerBase
 
     [HttpGet]
     public async Task<IEnumerable<QuizV2>> GetQuizzes(
-        [FromQuery] int? count,
+        [FromQuery] int? limit,
         [FromQuery] string? category,
         [FromQuery] string? difficulty)
     {
@@ -43,9 +43,9 @@ public class QuizzesController : ControllerBase
             query = query.Where(q => q.Difficulty.ToLower().Equals(difficulty.ToLower()));
         }
 
-        if (count != null)
+        if (limit != null)
         {
-            return await query.Take((int)count).ToListAsync();
+            return await query.Take((int)limit).ToListAsync();
         }
 
         return await query.ToListAsync();
