@@ -13,9 +13,9 @@ namespace QuizzWebApi.Controllers.v2;
 [ApiController]
 [ApiVersion("2.0")]
 [QuizExceptionFilter]
-[Route("api/v{version:apiVersion}/[controller]")]
 [ServiceFilter(typeof(ApiAuthFilter))]
-[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme /*, Roles = "User"*/)]
+[Route("api/v{version:apiVersion}/[controller]")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
 public class QuestionController : ControllerBase
 {
     private readonly QuizContextV2 _context;
@@ -35,6 +35,8 @@ public class QuestionController : ControllerBase
     public async Task<ActionResult<QuestionV2>> GetQuestionV2(int id)
     {
         var quiz = await _context.QuestionsV2.FindAsync(id);
+
+        _context.QuestionsV2.Include(c => c.QuizV2Id);
         if (quiz == null) return NotFound();
 
         return quiz;

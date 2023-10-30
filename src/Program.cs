@@ -12,6 +12,7 @@ using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
 using QuizzWebApi.Repository;
 using QuizzWebApi.Services.Health;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace QuizzWebApi;
 
@@ -19,7 +20,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers();
@@ -27,6 +27,7 @@ public class Program
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
         builder.Services.AddScoped<ApiAuthFilter>();
+        builder.Services.AddScoped<JwtTokenFilter>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         #region JWT
@@ -66,9 +67,36 @@ public class Program
 
         builder.Services.AddSwaggerGen(options =>
         {
+            var securityScheme = new OpenApiSecurityScheme()
+            {
+                Reference = new OpenApiReference()
+                {
+                    Id = "jwt_auth",
+                    Type = ReferenceType.SecurityScheme
+                }
+            };
+
+            var securityDefinition = new OpenApiSecurityScheme()
+            {
+                Name = "Bearer",
+                BearerFormat = "JWT",
+                Scheme = "bearer",
+                Description = "Specify the authorization token.",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+            };
+            options.AddSecurityDefinition("jwt_auth", securityDefinition);
+
+            // Make sure swagger UI requires a Bearer token specified
+            var securityRequirements = new OpenApiSecurityRequirement()
+            {
+                { securityScheme, Array.Empty<string>() },
+            };
+            options.AddSecurityRequirement(securityRequirements);
+
             options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
             {
-                Description = "",
+                Description = "CAN BE EMPTY!!!",
                 Type = SecuritySchemeType.ApiKey,
                 Name = "x-api-key",
                 In = ParameterLocation.Header,
@@ -166,6 +194,12 @@ public class Program
                 var name = $"{description.GroupName}";
                 options.SwaggerEndpoint(url, name);
             }
+
+            options.Interceptors = new InterceptorFunctions
+            {
+                RequestInterceptorFunction =
+                    "function (req) { if (!req.headers['x-api-key']) { req.headers['x-api-key'] = '46BB6D176C0A4B56BA67B6A65CEBDA75'; } return req; }"
+            };
         });
 
         app.MapHealthChecks("api/health", new HealthCheckOptions
@@ -183,7 +217,5 @@ public class Program
 
 
         app.Run();
-
-
     }
 }

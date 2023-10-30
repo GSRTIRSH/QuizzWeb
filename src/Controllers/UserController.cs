@@ -13,6 +13,7 @@ namespace QuizzWebApi.Controllers;
 [QuizExceptionFilter]
 [Route("api/[controller]")]
 [ServiceFilter(typeof(ApiAuthFilter))]
+[ServiceFilter(typeof(JwtTokenFilter))]
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class UserController : ControllerBase
 {

@@ -36,47 +36,24 @@ public class AuthController : ControllerBase
         _jwtConfig = optionsMonitor.CurrentValue;
     }
 
-    /*
+
     [HttpGet]
-    [Route("swagger")]
-    public AuthResult GetResponse()
+    [Route("role")]
+    public async Task<List<IdentityUser>> GetUsersWithRole([FromQuery] string role)
     {
-        return new LoginRequestResponse();
+        var c = await _userManager.GetUsersInRoleAsync(role);
+        return c.ToList();
     }
-    */
 
-    [HttpGet()]
+    [HttpGet]
     [Route("user")]
-    public async Task<ActionResult<UserDto>> GetUser([FromQuery] string id)
+    public async Task<ActionResult> GetUser([FromQuery] string id, [FromQuery] bool full)
     {
-        if (!Request.Headers.TryGetValue("Authorization", out var authHeaderValue))
-        {
-            return BadRequest("Authorization header is missing");
-        }
-
-        var token = authHeaderValue.ToString().Replace("Bearer ", string.Empty);
-
-        var hu = await _userManager.FindByIdAsync(id);
-
-        try
-        {
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
-
-            if (jsonToken.Subject != hu.Email) return new ForbidResult();
-
-            var username = jsonToken?.Claims?.FirstOrDefault(c => c.Type == "username")?.Value;
-
-            Ok($"Username in token: {username}");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Failed to read token: {ex.Message}");
-        }
-
         var u = await _userManager.FindByIdAsync(id);
 
         var roles = await _userManager.GetRolesAsync(u);
+
+        if (full) return Ok(u);
 
         var userDto = new UserDto()
         {
@@ -87,7 +64,7 @@ public class AuthController : ControllerBase
             Roles = roles.ToList(),
         };
 
-        return userDto;
+        return Ok(userDto);
     }
 
     [HttpGet]
@@ -146,7 +123,7 @@ public class AuthController : ControllerBase
         var roleExist = await _roleManager.RoleExistsAsync("User");
         if (!roleExist)
         {
-            var roleResult = await _roleManager.CreateAsync(new IdentityRole("User"));
+            await _roleManager.CreateAsync(new IdentityRole("User"));
         }
 
         var isCreated = await _userManager.CreateAsync(newUser, registrationDto.Password);
@@ -162,7 +139,7 @@ public class AuthController : ControllerBase
                 {
                     Result = true,
                     Id = newUser.Id,
-                    Token = GenerateJwtToken(newUser)
+                    Token = await GenerateJwtToken(newUser)
                 };
             }
         }
@@ -206,26 +183,29 @@ public class AuthController : ControllerBase
 
         return new LoginRequestResponse()
         {
-            Token = GenerateJwtToken(exitingUser),
+            Token = await GenerateJwtToken(exitingUser),
             Id = exitingUser.Id,
             Result = true
         };
     }
 
-    private string GenerateJwtToken(IdentityUser user)
+    private async Task<string> GenerateJwtToken(IdentityUser user)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
 
         var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret);
 
+        var c = await _userManager.GetRolesAsync(user);
+
         var tokenDescriptor = new SecurityTokenDescriptor()
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim("Id", user.Id),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim("id", user.Id),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("role", c?.First() ?? "User")
             }),
             Expires = DateTime.Now.AddHours(4),
             SigningCredentials = new SigningCredentials(
