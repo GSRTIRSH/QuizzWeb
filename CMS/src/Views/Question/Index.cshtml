@@ -1,4 +1,4 @@
-@model IEnumerable<CMS.Models.Quiz>
+@model IEnumerable<CMS.Models.QuestionV2>
 
 <style>
     thead {
@@ -33,19 +33,13 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
+                @Html.DisplayNameFor(model => model.Answers)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Questions)
+                @Html.DisplayNameFor(model => model.CorrectAnswers)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Difficulty)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Author)
+                @Html.DisplayNameFor(model => model.QuizV2Id)
             </th>
         </tr>
         </thead>
@@ -60,21 +54,13 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ImagePath)
+                    @Html.DisplayFor(modelItem => item.Answers)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Questions.Count)
+                    @Html.DisplayFor(modelItem => item.CorrectAnswers)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Category)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Difficulty)
-                </td>
-                <td>
-                    <link>
-                    @Html.DisplayFor(modelItem => item.Author)
-                    <link/>
+                    @Html.DisplayFor(modelItem => item.QuizV2Id)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

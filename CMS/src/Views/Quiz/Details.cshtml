@@ -36,19 +36,19 @@
 
     <div class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Question)
+            @Html.DisplayNameFor(model => model.Title)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Question) 
+            @Html.DisplayFor(model => model.Title)
         </dd>
     </div>
 
     <div class="row">
         <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.ImagePath)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.ImagePath)
         </dd>
     </div>
 
@@ -57,60 +57,44 @@
         <dt class="col-sm-3">
             Answers
         </dt>
-        <dd class="col-sm-10">
-            @foreach (var answer in Model.Answers)
-            {
+    </div>
+    @foreach (var answer in Model.Questions)
+    {
+        <div class="row">
+            <dd class="col-sm-10">
                 <div>
-                    @answer.Key: @answer.Value
+                    @answer.Id
                 </div>
-            }
-        </dd>
-    </div>
-
-    <!-- Display Correct Answers -->
-    <div class="row">
-        <dt class="col-sm-3">
-            Correct Answers
-        </dt>
-        <dd class="col-sm-10">
-            @foreach (var correctAnswer in Model.CorrectAnswers)
-            {
                 <div>
-                    @correctAnswer.Key: @correctAnswer.Value
+                    @answer.Title
                 </div>
-            }
-        </dd>
-    </div>
-
-    <div class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.CorrectAnswer)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CorrectAnswer)
-        </dd>
-    </div>
-
-    <div class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Explanation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Explanation)
-        </dd>
-    </div>
-
-    <div class="row">
-        <dt class="col-sm-3">
-            @Html.DisplayNameFor(model => model.Tip)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tip)
-        </dd>
-    </div>
+                <div>
+                    @nameof(answer.Answers)
+                    @foreach (var tag in answer.Answers.Keys)
+                    {
+                        <ul>
+                            <li>@tag.ToString(): @answer.Answers[tag]</li>
+                        </ul>
+                    }
+                </div>
+                <div>
+                    @nameof(answer.CorrectAnswers)
+                    @foreach (var tag in answer.CorrectAnswers.Keys)
+                    {
+                        <ul>
+                            <li>@tag.ToString(): @answer.Answers[tag]</li>
+                        </ul>
+                    }
+                </div>
+                <div>
+                    @answer.QuizV2Id
+                </div>
+            </dd>
+        </div>
+    }
 
     <!-- Display Tags -->
-    <div class="row">
+    @*<div class="row">
         <dt class="col-sm-3">
             Tags
         </dt>
@@ -125,7 +109,7 @@
                 </div>
             }
         </dd>
-    </div>
+    </div>*@
 
     <div class="row">
         <dt class="col-sm-3">

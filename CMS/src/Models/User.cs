@@ -2,17 +2,13 @@ namespace CMS.Models;
 
 public class User
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
 
-    public string FirstName { get; set; }
-
-    public string SubName { get; set; }
+    public string UserName { get; set; }
 
     public string Email { get; set; }
 
-    public string PasswordHash { get; set; }
+    public bool EmailConfirmed { get; set; }
 
-    public string Token { get; set; }
-
-    public int[]? MyQuizzes { get; set; }
+    public List<string> Roles { get; set; }
 }

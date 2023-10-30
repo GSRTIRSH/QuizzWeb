@@ -7,81 +7,81 @@ using Microsoft.AspNetCore.Authorization;
 namespace CMS.Controllers;
 
 //[Authorize]
-public class QuizController : Controller
+public class QuestionController : Controller
 {
-    private readonly QuizContext _context;
+    private readonly QuestionContext _context;
 
     private const string BaseUrl = "http://localhsot:5200/api";
 
     private readonly ClientApi _clientApi;
 
-    public QuizController()
+    public QuestionController()
     {
-        _context = new QuizContext();
+        _context = new QuestionContext();
         _clientApi = new ClientApi(BaseUrl, new HttpClient());
     }
 
-    // GET: Quizzes/Index
+    // GET: Questions/Index
     public async Task<IActionResult> Index()
     {
-        if (_context.Quizzes == null) return NotFound();
+        if (_context.Questions == null) return NotFound();
 
-        return _context.Quizzes != null
-            ? View(_context.Quizzes.ToList())
-            : Problem("Entity set 'CMS.Quizzes'  is null.");
+        return _context.Questions != null
+            ? View(_context.Questions)
+            : Problem("Entity set 'CMS.Questions'  is null.");
     }
 
-    // GET: Quizzes/Details/5
+    // GET: Questions/Details/5
     public async Task<IActionResult> Details(int? id)
     {
-        if (id == null || _context.Quizzes == null) return NotFound();
+        if (id == null || _context.Questions == null) return NotFound();
 
-        var quizzes = _context.Quizzes
+        var quizzes = _context.Questions
             .FirstOrDefault(m => m.Id == id);
         if (quizzes == null) return NotFound();
 
         return View(quizzes);
     }
 
-    // GET: Quizzes/Create
+    // GET: Questions/Create
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: Quizzes/Create
+    // POST: Questions/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("")] Quiz quiz)
+        [Bind("")] QuestionV2 question)
     {
         if (ModelState.IsValid)
         {
-            _context.Quizzes.Add(quiz);
+            _context.Questions.Add(question);
             //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        return View(quiz);
+        return View(question);
     }
 
-    // GET: Quizzes/Edit/5
+    // GET: Questions/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null || _context.Quizzes == null) return NotFound();
+        if (id == null || _context.Questions == null) return NotFound();
 
-        var quizzes = _context.Quizzes.Find(u => u.Id == id);
+        var quizzes = _context.Questions.Find(u => u.Id == id);
         if (quizzes == null) return NotFound();
         return View(quizzes);
     }
 
-    // POST: Quizzes/Edit/5
+    // POST: Questions/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id,
-        [Bind("")] Quiz quiz)
+        [Bind("")] QuestionV2 question)
     {
-        if (id != quiz.Id) return NotFound();
+        if (id != question.Id) return NotFound();
 
         if (ModelState.IsValid)
         {
@@ -90,7 +90,7 @@ public class QuizController : Controller
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EventExists(quiz.Id))
+                if (!EventExists(question.Id))
                     return NotFound();
                 throw;
             }
@@ -98,30 +98,30 @@ public class QuizController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        return View(quiz);
+        return View(question);
     }
 
-    // GET: Quizzes/Delete/5
+    // GET: Questions/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null || _context.Quizzes == null) return NotFound();
+        if (id == null || _context.Questions == null) return NotFound();
 
-        var quizzes = _context.Quizzes
+        var quizzes = _context.Questions
             .FirstOrDefault(m => m.Id == id);
         if (quizzes == null) return NotFound();
 
         return View(quizzes);
     }
 
-    // POST: Quizzes/Delete/5
+    // POST: Questions/Delete/5
     [HttpPost]
     [ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (_context.Quizzes == null) return Problem("Entity set 'IcalWebAppContext.Quizzes'  is null.");
-        var quizzes = _context.Quizzes.Find(u => u.Id == id);
-        if (quizzes != null) _context.Quizzes.Remove(quizzes);
+        if (_context.Questions == null) return Problem("Entity set 'IcalWebAppContext.Questions'  is null.");
+        var quizzes = _context.Questions.Find(u => u.Id == id);
+        if (quizzes != null) _context.Questions.Remove(quizzes);
 
         //await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
@@ -129,15 +129,15 @@ public class QuizController : Controller
 
     private bool EventExists(int id)
     {
-        return (_context.Quizzes?.Any(e => e.Id == id)).GetValueOrDefault();
+        return (_context.Questions?.Any(e => e.Id == id)).GetValueOrDefault();
     }
 
 
     public async Task<IActionResult> Clear()
     {
-        var quizzes = _context.Quizzes.ToList();
+        var quizzes = _context.Questions.ToList();
 
-        foreach (var ev in quizzes) _context.Quizzes.Remove(ev);
+        foreach (var ev in quizzes) _context.Questions.Remove(ev);
 
         //await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));

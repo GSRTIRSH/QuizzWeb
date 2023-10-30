@@ -1,6 +1,6 @@
 namespace CMS.Data;
 
-public class AuthController
+public class AuthContext
 {
     
 }

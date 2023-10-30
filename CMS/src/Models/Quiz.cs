@@ -5,32 +5,19 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CMS.Models;
 
-[Table("quizzes")]
 public class Quiz
 {
     public int Id { get; set; }
+    
+    public string Title { get; set; }
 
-    public string Question { get; set; }
+    public string ImagePath { get; set; }
 
-    public string? Description { get; set; }
-
-    public Dictionary<string, string> Answers { get; set; }
-
-    public bool MultipleCorrectAnswers { get; set; }
-
-    public Dictionary<string, string> CorrectAnswers { get; set; }
-
-    public int CorrectAnswer { get; set; }
-
-    public string? Explanation { get; set; }
-
-    public string? Tip { get; set; }
-
-    public List<Dictionary<string, string>> Tags { get; set; }
+    public List<QuestionV2> Questions { get; set; }
 
     public string Category { get; set; }
 
     public string Difficulty { get; set; }
 
-    public int? Author { get; set; }
+    public string Author { get; set; }
 }

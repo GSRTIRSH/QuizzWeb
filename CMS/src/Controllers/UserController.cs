@@ -9,7 +9,7 @@ namespace CMS.Controllers;
 
 public class UserController : Controller
 {
-    private readonly UserContext _context;
+    //private readonly UserContext _context;
 
     private const string BaseUrl = "http://localhsot:5200/api";
 
@@ -17,11 +17,11 @@ public class UserController : Controller
 
     public UserController()
     {
-        _context = new UserContext();
+        //_context = new UserContext();
         _clientApi = new ClientApi(BaseUrl, new HttpClient());
     }
 
-    // GET: Users/Index
+    /*// GET: Users/Index
     public async Task<IActionResult> Index()
     {
         //var c = _clientApi.GetAsync<List<User>>("user").Result;
@@ -39,7 +39,7 @@ public class UserController : Controller
         if (id == null || _context.Users == null) return NotFound();
 
         var users = _context.Users
-            .FirstOrDefault(m => m.Id == id);
+            .FirstOrDefault(m => m.Id == id.ToString());
         if (users == null) return NotFound();
 
         return View(users);
@@ -58,14 +58,10 @@ public class UserController : Controller
         [Bind("Id,Title,DateStart,DateEnd,Subject,Auditory,Proffessor")]
         User user)
     {
-        if (ModelState.IsValid)
-        {
-            _context.Users.Add(user);
-            //await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        if (!ModelState.IsValid) return View(user);
 
-        return View(user);
+        _context.Users?.Add(user);
+        return RedirectToAction(nameof(Index));
     }
 
     // GET: Users/Edit/5
@@ -73,7 +69,7 @@ public class UserController : Controller
     {
         if (id == null || _context.Users == null) return NotFound();
 
-        var users = _context.Users.Find(u => u.Id == id);
+        var users = _context.Users.Find(u => u.Id == id.ToString());
         if (users == null) return NotFound();
         return View(users);
     }
@@ -85,24 +81,22 @@ public class UserController : Controller
         [Bind("Id, Email, FirstName, SubName, PasswordHash")]
         User user)
     {
-        if (id != user.Id) return NotFound();
+        if (id.ToString() != user.Id) return NotFound();
 
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return View(user);
+        
+        try
         {
-            try
-            {
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EventExists(user.Id))
-                    return NotFound();
-                throw;
-            }
-
-            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!EventExists(user.Id))
+                return NotFound();
+            throw;
         }
 
-        return View(user);
+        return RedirectToAction(nameof(Index));
+
     }
 
     // GET: Users/Delete/5
@@ -111,7 +105,7 @@ public class UserController : Controller
         if (id == null || _context.Users == null) return NotFound();
 
         var users = _context.Users
-            .FirstOrDefault(m => m.Id == id);
+            .FirstOrDefault(m => m.Id == id.ToString());
         if (users == null) return NotFound();
 
         return View(users);
@@ -124,14 +118,14 @@ public class UserController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         if (_context.Users == null) return Problem("Entity set 'IcalWebAppContext.Users'  is null.");
-        var users = _context.Users.Find(u => u.Id == id);
+        var users = _context.Users.Find(u => u.Id == id.ToString());
         if (users != null) _context.Users.Remove(users);
 
         //await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 
-    private bool EventExists(int id)
+    private bool EventExists(string id)
     {
         return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
     }
@@ -145,5 +139,5 @@ public class UserController : Controller
 
         //await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
-    }
+    }*/
 }

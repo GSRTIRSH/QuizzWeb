@@ -8,13 +8,32 @@
 
   <ItemGroup>
     <!--TODO: update packages to .NET 7.0-->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.22" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.22" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.22">
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.13" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.13">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.13" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.16" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Include="Views\Question\Create.cshtml" />
+    <AdditionalFiles Include="Views\Question\Delete.cshtml" />
+    <AdditionalFiles Include="Views\Question\Details.cshtml" />
+    <AdditionalFiles Include="Views\Question\Edit.cshtml" />
+    <AdditionalFiles Include="Views\Question\Index.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewStart.cshtml" />
   </ItemGroup>
 
 </Project>
