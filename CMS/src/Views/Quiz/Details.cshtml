@@ -1,0 +1,144 @@
+@model CMS.Models.Quiz
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<style>
+    dt {
+        margin: 10px;
+        background: #b6d4fe;
+        padding: 8px 4px;
+        border-radius: 5px;
+    }
+    dd {
+            margin: 10px;
+            
+            border: 1px solid #b6d4fe;
+            padding: 10px 0px;
+            border-radius: 5px;
+        }
+</style>
+
+<div>
+    <h4>Event</h4>
+    <hr/>
+    <div class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+    </div>
+
+    <div class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+    </div>
+
+    <div class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ImagePath)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ImagePath)
+        </dd>
+    </div>
+
+    <!-- Display Answers -->
+    <div class="row">
+        <dt class="col-sm-3">
+            Answers
+        </dt>
+    </div>
+    @foreach (var answer in Model.Questions)
+    {
+        <div class="row">
+            <dd class="col-sm-10">
+                <div>
+                    @answer.Id
+                </div>
+                <div>
+                    @answer.Title
+                </div>
+                <div>
+                    @nameof(answer.Answers)
+                    @foreach (var tag in answer.Answers.Keys)
+                    {
+                        <ul>
+                            <li>@tag.ToString(): @answer.Answers[tag]</li>
+                        </ul>
+                    }
+                </div>
+                <div>
+                    @nameof(answer.CorrectAnswers)
+                    @foreach (var tag in answer.CorrectAnswers.Keys)
+                    {
+                        <ul>
+                            <li>@tag.ToString(): @answer.Answers[tag]</li>
+                        </ul>
+                    }
+                </div>
+                <div>
+                    @answer.QuizV2Id
+                </div>
+            </dd>
+        </div>
+    }
+
+    <!-- Display Tags -->
+    @*<div class="row">
+        <dt class="col-sm-3">
+            Tags
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var tag in Model.Tags)
+            {
+                <div>
+                    @foreach (var tagItem in tag)
+                    {
+                        <span>@tagItem.Key: @tagItem.Value</span>
+                    }
+                </div>
+            }
+        </dd>
+    </div>*@
+
+    <div class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+    </div>
+
+    <div class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Difficulty)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Difficulty)
+        </dd>
+    </div>
+
+    <div class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Author)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Author)
+        </dd>
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

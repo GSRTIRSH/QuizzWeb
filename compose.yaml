@@ -8,16 +8,9 @@ services:
     ports:
       - "8080:80"
 
-  api:
-    image: quizzapi
-    container_name: qa
-    build: ./backend
-    ports:
-      - "5200:80"
-
-  cms:
-    image: quizzcms
-    container_name: qc
-    build: ./CMS
-    ports:
-      - "5000:80"
+#  cms:
+#    image: quizzcms
+#    container_name: qc
+#    build: ./CMS
+#    ports:
+#      - "5000:80"

@@ -1,0 +1,78 @@
+@model IEnumerable<CMS.Models.QuestionV2>
+
+<style>
+    thead {
+        background-color: #b6d4fe;
+    }
+        td {
+            margin: 2px;
+            background: #0dcaf0;
+            max-width: 70px;
+        }
+    .scroll-container {
+        overflow-x: auto; /* Enable horizontal scrolling */
+        white-space: -moz-pre-wrap; /* Prevent wrapping of content */
+        width: 100%; /* Set the width to 100% */
+    }
+
+    .scroll-content {
+        display: inline-block; /* Display content in a line */
+        padding: 10px; /* Add padding for content */
+        min-width: 500px; /* Set a minimum width for each item */
+    }
+</style>
+
+<div class="scroll-container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Answers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CorrectAnswers)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.QuizV2Id)
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Answers)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CorrectAnswers)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.QuizV2Id)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
