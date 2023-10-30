@@ -18,7 +18,7 @@ namespace QuizzWebApi.Controllers.v2;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme /*, Roles = "User"*/)]
 public class QuestionController : ControllerBase
 {
-    private QuizContextV2 _context;
+    private readonly QuizContextV2 _context;
 
     public QuestionController(QuizContextV2 context)
     {
@@ -36,7 +36,7 @@ public class QuestionController : ControllerBase
     {
         var quiz = await _context.QuestionsV2.FindAsync(id);
         if (quiz == null) return NotFound();
-        
+
         return quiz;
     }
 
@@ -46,7 +46,7 @@ public class QuestionController : ControllerBase
     {
         _context.QuestionsV2.Add(question);
         await _context.SaveChangesAsync();
-        
+
         return CreatedAtAction(nameof(GetQuestionV2), new { id = question.Id }, question);
     }
 
@@ -55,7 +55,7 @@ public class QuestionController : ControllerBase
     {
         var question = await _context.QuestionsV2.FindAsync(id);
         if (question == null) return NotFound();
-        
+
         var updateData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json.ToString());
         if (updateData == null) return BadRequest();
 
@@ -63,8 +63,9 @@ public class QuestionController : ControllerBase
         {
             question.Title = updateData["title"].GetString();
         }
+
         await _context.SaveChangesAsync();
-        
+
         return Ok();
     }
 
@@ -76,7 +77,7 @@ public class QuestionController : ControllerBase
 
         _context.QuestionsV2.Remove(question);
         await _context.SaveChangesAsync();
-        
+
         return Ok();
     }
 

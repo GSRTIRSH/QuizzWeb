@@ -47,8 +47,33 @@ public class AuthController : ControllerBase
 
     [HttpGet()]
     [Route("user")]
-    public async Task<UserDto> GetUser([FromQuery] string id)
+    public async Task<ActionResult<UserDto>> GetUser([FromQuery] string id)
     {
+        if (!Request.Headers.TryGetValue("Authorization", out var authHeaderValue))
+        {
+            return BadRequest("Authorization header is missing");
+        }
+
+        var token = authHeaderValue.ToString().Replace("Bearer ", string.Empty);
+
+        var hu = await _userManager.FindByIdAsync(id);
+
+        try
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jsonToken.Subject != hu.Email) return new ForbidResult();
+
+            var username = jsonToken?.Claims?.FirstOrDefault(c => c.Type == "username")?.Value;
+
+            Ok($"Username in token: {username}");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Failed to read token: {ex.Message}");
+        }
+
         var u = await _userManager.FindByIdAsync(id);
 
         var roles = await _userManager.GetRolesAsync(u);
@@ -117,7 +142,6 @@ public class AuthController : ControllerBase
             Email = registrationDto.Email,
             UserName = registrationDto.Name,
         };
-
 
         var roleExist = await _roleManager.RoleExistsAsync("User");
         if (!roleExist)
