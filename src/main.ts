@@ -1,8 +1,10 @@
-import { createApp } from 'vue'
 import App from '@/App.vue'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import router from '@/router/router.js'
 import '@/assets/css/index.scss'
 import PrimeVue from 'primevue/config';
+import 'primeicons/primeicons.css'
 
 //primevue components
 import Button from 'primevue/button'
@@ -14,7 +16,7 @@ import Card from 'primevue/card'
 import Chip from 'primevue/chip'
 import InlineMessage from 'primevue/inlinemessage'
 
-
+const pinia = createPinia()
 const app = createApp(App)
 
 app.component('Dialog', Dialog)
@@ -26,6 +28,7 @@ app.component('Card', Card)
 app.component('Chip', Chip)
 app.component('InlineMessage', InlineMessage)
 
+app.use(pinia)
 app.use(router)
 app.use(PrimeVue);
 app.mount('#app')

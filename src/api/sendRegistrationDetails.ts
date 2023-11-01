@@ -1,18 +1,20 @@
 import { config } from '@/config'
 
-//TODO: refactor all this shit!
+// Устанавливаем значения для имени пользователя и пароля
 const username: string = 'example_username';
 const password: string = 'example_password';
 
+// Создаем объект с данными для авторизации
 const credentials: object =
 {
     username: username,
     password: password
 };
 
+// Функция для отправки данных о регистрации
 export const sendRegistrationDetails = async (label1: string, label2: string): Promise<boolean> => {
 
-    //get 
+    // Получаем данные с сервера
     const aw = await fetch(`${config.YC_API_URL}/shit`);
     const dt: string = await aw.text();
     console.warn(dt);
@@ -22,8 +24,9 @@ export const sendRegistrationDetails = async (label1: string, label2: string): P
 
     let isLogin = false;
 
+    // Опции для запроса
     const requestOptions =
-    {
+    { 
         method: 'POST',
         headers: {
             'x-api-key': '46BB6D176C0A4B56BA67B6A65CEBDA75',
@@ -32,8 +35,8 @@ export const sendRegistrationDetails = async (label1: string, label2: string): P
         body: JSON.stringify(credentials),
     };
 
-    //http post
-    const response: void = await fetch(`${config.API_URL}/health`, requestOptions)
+    // Отправляем POST-запрос на авторизацию
+    const response: void = await fetch(`${config.API_URL}/auth/login`, requestOptions)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -48,10 +51,10 @@ export const sendRegistrationDetails = async (label1: string, label2: string): P
             console.error('There was an error:', error);
         });
     
-    // Сохранение данных в Session Storage
+    // Сохраняем данные в Session Storage
     sessionStorage.setItem('isLogin', isLogin.toString());
 
-    // Получение данных из Session Storage
+    // Получаем данные из Session Storage
     const value = sessionStorage.getItem('isLogin');
     console.log(value);
     

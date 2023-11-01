@@ -24,6 +24,7 @@
 </template>
 
 <script setup lang="ts">
+
 const scrollToQuizSelect = () => {
     document.getElementById('scrollPoint')?.scrollIntoView({ behavior: 'smooth' });
 }

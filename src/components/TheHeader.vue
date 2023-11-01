@@ -11,6 +11,10 @@
                 <Button @click="$router.push({name: 'Auth'})">
                     Log in
                 </Button>
+                <div v-if="false" class="tw-flex tw-items-center tw-text-base-orange">
+                    <div class="tw-mr-1 tw-font-base-ui">user</div>
+                    <Avatar icon="pi pi-user" class="mr-2" size="large"/>
+                </div>
             </div>
         </div>
     </header>

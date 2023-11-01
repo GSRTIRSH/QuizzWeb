@@ -18,18 +18,25 @@ $time-2: 240s;
 $time-3: 360s;
 $time-4: 600s;
 
+/* Функция для генерации случайных чисел в заданном диапазоне */
+@function random-range($min, $max) {
+  $range: $max - $min;
+  @return random() * $range + $min;
+}
+
 /* awesome mixin */
 @function particles($max) {
-   $val: 0px 0px $color-particle;
-   @for $i from 1 through $max {
-      $val: #{$val},
-      random($spacing)+px random($spacing)+px $color-particle;
-   }
-   @return $val;
+  $val: 0px 0px $color-particle;
+  @for $i from 1 through $max {
+    $x: random-range(0px, $spacing);
+    $y: random-range(0px, $spacing);
+    $val: #{$val}, #{$x} #{$y} $color-particle;
+  }
+  @return $val;
 }
 
 @mixin particles($max) {
-   box-shadow: particles($max);
+  box-shadow: particles($max);
 }
 
 .page-bg,

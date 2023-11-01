@@ -11,6 +11,8 @@ const handleSwitchRegForm = () => isRegistration.value = !isRegistration.value
 
 const onAfterAuthLeave = () => (isRegistration.value = !isRegistration.value)
 const onAfterRegLeave = () => (isAuthorization.value = !isAuthorization.value)
+
+
 </script>
 
 <template>

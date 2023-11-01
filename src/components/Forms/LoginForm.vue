@@ -1,31 +1,31 @@
 <script setup lang="ts">
 import { useForm, useField } from 'vee-validate'
 import { ref } from 'vue'
-import { object, ObjectSchema, string } from 'yup'
+import * as Yup from 'yup'
+import { useAuthStore } from '@/stores/authStore'
+
+const { signin } = useAuthStore()
 
 interface LoginForm {
-    login: string
+    name: string
     password: string
 }
 
-const isLoginFocused = ref(false)
-const isPasswordFocused = ref(false)
-
 const emit = defineEmits()
 
-const loginSchema: ObjectSchema<LoginForm> = object({
-    login: string().required(),
-    password: string().min(6).required()
+const loginSchema: Yup.ObjectSchema<LoginForm> = Yup.object({
+    name: Yup.string().required(),
+    password: Yup.string().min(6).required()
 })
 
 const { handleSubmit } = useForm<LoginForm>({
     validationSchema: loginSchema
 })
-const { value: login, errors: loginErrors } = useField<LoginForm['login']>('login')
+const { value: name, errors: loginErrors } = useField<LoginForm['name']>('name')
 const { value: password, errors: passwordErrors } = useField<LoginForm['password']>('password')
 
-const onSubmit = handleSubmit((values) => {
-    console.log(values, 'hello')
+const onSubmit = handleSubmit(async (values) => {
+    signin(values)
 })
 </script>
 
@@ -36,21 +36,14 @@ const onSubmit = handleSubmit((values) => {
     >
         <div class="tw-flex tw-flex-col tw-self-center tw-w-full tw-max-w-sm tw-gap-2">
             <InputText
-                v-model="login"
+                v-model="name"
                 size="large"
                 name="email"
                 autocomplete="login"
                 id="login"
                 placeholder="Email"
-                @focusin="isLoginFocused = true"
-                @focusout="isLoginFocused = false"
                 :class="{ 'p-invalid': loginErrors.length }"
             />
-            <InlineMessage v-if="isLoginFocused && loginErrors.length">
-                <span v-for="(error, index) in loginErrors">
-                    {{ error }}
-                </span>
-            </InlineMessage>
             <InputText
                 v-model="password"
                 size="large"
@@ -59,16 +52,9 @@ const onSubmit = handleSubmit((values) => {
                 id="authPassword"
                 autocomplete="current-password"
                 placeholder="Password"
-                @focusin="isPasswordFocused = true"
-                @focusout="isPasswordFocused = false"
                 :class="{ 'p-invalid': passwordErrors.length }"
             />
-            <InlineMessage v-if="isPasswordFocused && passwordErrors.length">
-                <span v-for="(error, index) in passwordErrors">
-                    <div>{{ error }}</div>
-                </span>
-            </InlineMessage>
-            <Button class="tw-justify-center tw-text-2xl"><span>log in</span></Button>
+            <Button type="submit" class="tw-justify-center tw-text-2xl"><span>log in</span></Button>
         </div>
         <div class="tw-flex tw-items-center">
             <div class="tw-h-1 tw-w-full tw-bg-black" />
@@ -88,5 +74,3 @@ const onSubmit = handleSubmit((values) => {
         </Button>
     </form>
 </template>
-
-<style scoped></style>
