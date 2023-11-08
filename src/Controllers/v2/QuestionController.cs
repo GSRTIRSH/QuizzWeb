@@ -18,11 +18,13 @@ namespace QuizzWebApi.Controllers.v2;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
 public class QuestionController : ControllerBase
 {
+    private readonly ILogger _logger;
     private readonly QuizContextV2 _context;
 
-    public QuestionController(QuizContextV2 context)
+    public QuestionController(QuizContextV2 context, ILogger logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -32,7 +34,7 @@ public class QuestionController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<QuestionV2>> GetQuestionV2(int id)
+    public async Task<ActionResult<QuestionV2>> GetQuestion(int id)
     {
         var quiz = await _context.QuestionsV2.FindAsync(id);
 
@@ -44,12 +46,12 @@ public class QuestionController : ControllerBase
 
     [HttpPost]
     [RequireApiKey(isAdminKey: true)]
-    public async Task<ActionResult> PostQuestionV2(QuestionV2 question)
+    public async Task<ActionResult> PostQuestion(QuestionV2 question)
     {
         _context.QuestionsV2.Add(question);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetQuestionV2), new { id = question.Id }, question);
+        return CreatedAtAction(nameof(GetQuestion), new { id = question.Id }, question);
     }
 
     [HttpPatch("{id:int}")]

@@ -19,6 +19,7 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
         // add swagger document for every API version discovered
         foreach (var description in _provider.ApiVersionDescriptions)
         {
+            var c = description.IsDeprecated ? description.GroupName : $"{description.GroupName} (DEPRECATED) ";
             options.SwaggerDoc(description.GroupName, CreateVersionInfo(description));
         }
     }

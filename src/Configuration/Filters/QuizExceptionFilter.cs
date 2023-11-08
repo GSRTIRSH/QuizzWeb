@@ -10,9 +10,8 @@ public class QuizExceptionFilter : ExceptionFilterAttribute
         var exception = context.Exception;
         var response = new { error = "Sent invalid request to database" };
         context.Result = new ContentResult()
-        { 
+        {
             Content = response.error,
-            
             StatusCode = StatusCodes.Status500InternalServerError,
         };
 

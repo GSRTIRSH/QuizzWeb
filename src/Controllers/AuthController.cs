@@ -13,16 +13,15 @@ using QuizzWebApi.Models.Identity;
 namespace QuizzWebApi.Controllers;
 
 [ApiController]
-[ApiVersion("1.0")]
+[ApiVersion("1.0", Deprecated = true)]
 [ApiVersion("2.0")]
 [Route("api/v{version:apiVersion}/[controller]")]
+[Produces("application/json")]
 public class AuthController : ControllerBase
 {
     private readonly ILogger<AuthController> _logger;
-
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
-
     private readonly JwtConfig _jwtConfig;
 
     public AuthController(ILogger<AuthController> logger,
@@ -36,7 +35,11 @@ public class AuthController : ControllerBase
         _jwtConfig = optionsMonitor.CurrentValue;
     }
 
-
+    /// <summary>
+    /// Finds users who belongs to the role
+    /// </summary>
+    /// <param name="role">role name</param>
+    /// <returns></returns>
     [HttpGet]
     [Route("role")]
     public async Task<List<IdentityUser>> GetUsersWithRole([FromQuery] string role)
@@ -45,8 +48,18 @@ public class AuthController : ControllerBase
         return c.ToList();
     }
 
+    /// <summary>
+    /// Returns user data
+    /// </summary>
+    /// <param name="id">user id</param>
+    /// <param name="full">model view type is full</param>
+    /// <returns></returns>
+    /// <response code="200">Returns full user data</response>
+    /// <response code="200">Returns short user data</response> 
     [HttpGet]
     [Route("user")]
+    [ProducesResponseType(typeof(IdentityUser), 200)]
+    [ProducesResponseType(typeof(UserDto), 200)]
     public async Task<ActionResult> GetUser([FromQuery] string id, [FromQuery] bool full)
     {
         var u = await _userManager.FindByIdAsync(id);
@@ -67,6 +80,10 @@ public class AuthController : ControllerBase
         return Ok(userDto);
     }
 
+    /// <summary>
+    /// Returns a list of all users
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     public async Task<List<UserDto>> Get()
     {
@@ -92,13 +109,23 @@ public class AuthController : ControllerBase
         return usersDto;
     }
 
+    /// <summary>
+    /// Register a new user
+    /// </summary>
+    /// <param name="registrationDto">register data model</param>
+    /// <returns>ActionResult</returns>
+    /// <response code="201">User has created</response>
+    /// <response code="400">Request has incorrect values</response>
     [HttpPost]
-    [Route("Register")]
+    [Consumes("application/json")]
+    [Route("register")]
+    [ProducesResponseType(typeof(RegistrationRequestResponse), 201)]
+    [ProducesResponseType(typeof(AuthErrorResult), 400)]
     public async Task<ActionResult<AuthResult>> Register([FromBody] UserRegistrationDto registrationDto)
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(new RegistrationRequestResponse()
+            return BadRequest(new AuthErrorResult()
             {
                 Result = false,
                 Errors = new List<string>() { "Invalid ModelState values" }
@@ -108,7 +135,7 @@ public class AuthController : ControllerBase
         var emailExists = await _userManager.FindByEmailAsync(registrationDto.Email);
 
         if (emailExists != null)
-            return BadRequest(new RegistrationRequestResponse()
+            return BadRequest(new AuthErrorResult()
             {
                 Result = false,
                 Errors = new List<string>() { "email already exists" }
@@ -135,12 +162,12 @@ public class AuthController : ControllerBase
 
             if (isRoleAssigned.Succeeded)
             {
-                return new RegistrationRequestResponse()
+                return CreatedAtAction(nameof(Register), new RegistrationRequestResponse()
                 {
                     Result = true,
                     Id = newUser.Id,
                     Token = await GenerateJwtToken(newUser)
-                };
+                });
             }
         }
 
@@ -149,15 +176,24 @@ public class AuthController : ControllerBase
 
         var errors = e1.Concat(e2).ToList();
 
-        return BadRequest(new RegistrationRequestResponse()
+        return BadRequest(new AuthErrorResult()
         {
             Result = false,
             Errors = errors
         });
     }
 
+    /// <summary>
+    /// Login a exited user
+    /// </summary>
+    /// <param name="loginDto">login data model</param>
+    /// <returns>ActionResult</returns>
+    /// <response code="200">User has login</response>
+    /// <response code="400">Request has incorrect values</response>
     [HttpPost]
     [Route("login")]
+    [ProducesResponseType(typeof(RegistrationRequestResponse), 200)]
+    [ProducesResponseType(typeof(AuthErrorResult), 400)]
     public async Task<ActionResult<AuthResult>> Login([FromBody] UserLoginDto loginDto)
     {
         if (!ModelState.IsValid)
@@ -166,7 +202,7 @@ public class AuthController : ControllerBase
         var exitingUser = await _userManager.FindByNameAsync(loginDto.Name);
 
         if (exitingUser == null)
-            return BadRequest(new RegistrationRequestResponse()
+            return BadRequest(new AuthErrorResult()
             {
                 Result = false,
                 Errors = new List<string>() { "Invalid login or password" }
@@ -175,18 +211,18 @@ public class AuthController : ControllerBase
         var isPasswordValid = await _userManager.CheckPasswordAsync(exitingUser, loginDto.Password);
 
         if (!isPasswordValid)
-            return BadRequest(new RegistrationRequestResponse()
+            return BadRequest(new AuthErrorResult()
             {
                 Result = false,
                 Errors = new List<string>() { "Invalid login or password" }
             });
 
-        return new LoginRequestResponse()
+        return Ok(new LoginRequestResponse()
         {
             Token = await GenerateJwtToken(exitingUser),
             Id = exitingUser.Id,
             Result = true
-        };
+        });
     }
 
     private async Task<string> GenerateJwtToken(IdentityUser user)

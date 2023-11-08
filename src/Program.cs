@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Asp.Versioning;
 using HealthChecks.UI.Client;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
@@ -13,6 +15,8 @@ using QuizzWebApi.Data;
 using QuizzWebApi.Repository;
 using QuizzWebApi.Services.Health;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Serilog;
+using Serilog.Configuration;
 
 namespace QuizzWebApi;
 
@@ -25,21 +29,16 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
-
         builder.Services.AddScoped<ApiAuthFilter>();
         builder.Services.AddScoped<JwtTokenFilter>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-        #region JWT
 
         builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
             }).AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<IdentityContext>();
-
         builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
-
         builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -60,10 +59,7 @@ public class Program
                     ValidateLifetime = false
                 };
             });
-
         builder.Services.AddAuthorization();
-
-        #endregion
 
         builder.Services.AddSwaggerGen(options =>
         {
@@ -75,8 +71,7 @@ public class Program
                     Type = ReferenceType.SecurityScheme
                 }
             };
-
-            var securityDefinition = new OpenApiSecurityScheme()
+            options.AddSecurityDefinition("jwt_auth", new OpenApiSecurityScheme()
             {
                 Name = "Bearer",
                 BearerFormat = "JWT",
@@ -84,24 +79,13 @@ public class Program
                 Description = "Specify the authorization token.",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.Http,
-            };
-            options.AddSecurityDefinition("jwt_auth", securityDefinition);
-
+            });
             // Make sure swagger UI requires a Bearer token specified
             var securityRequirements = new OpenApiSecurityRequirement()
             {
                 { securityScheme, Array.Empty<string>() },
             };
             options.AddSecurityRequirement(securityRequirements);
-
-            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
-            {
-                Description = "CAN BE EMPTY!!!",
-                Type = SecuritySchemeType.ApiKey,
-                Name = "x-api-key",
-                In = ParameterLocation.Header,
-                Scheme = "ApiKeyScheme"
-            });
 
             var scheme = new OpenApiSecurityScheme
             {
@@ -112,22 +96,34 @@ public class Program
                 },
                 In = ParameterLocation.Header
             };
-
+            options.AddSecurityDefinition("ApiKey", new OpenApiSecurityScheme
+            {
+                Description = "CAN BE EMPTY!!!",
+                Type = SecuritySchemeType.ApiKey,
+                Name = "x-api-key",
+                In = ParameterLocation.Header,
+                Scheme = "ApiKeyScheme"
+            });
             var requirement = new OpenApiSecurityRequirement()
             {
                 { scheme, new List<string>() }
             };
-
             options.AddSecurityRequirement(requirement);
+
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
         });
 
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", policyBuilder =>
             {
-                policyBuilder.AllowAnyOrigin()
+                policyBuilder
+                    .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader();
+                /*.AllowCredentials();*/
             });
         });
 
@@ -137,7 +133,7 @@ public class Program
             .AddApiVersioning(options =>
             {
                 options.AssumeDefaultVersionWhenUnspecified = true;
-                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.DefaultApiVersion = new ApiVersion(2, 0);
                 options.UnsupportedApiVersionStatusCode = 501;
                 options.ReportApiVersions = true;
             })
@@ -148,7 +144,6 @@ public class Program
             });
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
-
 
         #region DbContext
 
