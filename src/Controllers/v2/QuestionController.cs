@@ -10,6 +10,7 @@ using QuizzWebApi.Models;
 
 namespace QuizzWebApi.Controllers.v2;
 
+//TODO: add authorization
 [ApiController]
 [ApiVersion("2.0")]
 [QuizExceptionFilter]
@@ -27,13 +28,35 @@ public class QuestionController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Returns a list of all question
+    /// </summary>
+    /// <remarks>will be deleted in future</remarks>
+    /// <returns></returns>
     [HttpGet]
+    [Produces("application/json")]
     public async Task<IEnumerable<QuestionV2>> GetQuestions()
     {
         return await _context.QuestionsV2.ToListAsync();
     }
 
+    /// <summary>
+    /// Find a question by Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <response code="200">Returns question</response>
+    /// <response code="404">Specified question doesn't exists</response>
+    /// <response code="401">User unauthorized</response>
+    /// <response code="403">User haven't access</response>
     [HttpGet("{id:int}")]
+    [TypeFilter(typeof(JwtTokenFilter))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<ActionResult<QuestionV2>> GetQuestion(int id)
     {
         var quiz = await _context.QuestionsV2.FindAsync(id);
@@ -44,7 +67,23 @@ public class QuestionController : ControllerBase
         return quiz;
     }
 
+    /// <summary>
+    /// Create a new question
+    /// </summary>
+    /// <param name="question"></param>
+    /// <returns></returns>
+    /// <response code="200">Question created</response>
+    /// <response code="400">Request has incorrect values</response>
+    /// <response code="401">User unauthorized</response>
+    /// <response code="403">User haven't access</response>
     [HttpPost]
+    [TypeFilter(typeof(JwtTokenFilter))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]
     [RequireApiKey(isAdminKey: true)]
     public async Task<ActionResult> PostQuestion(QuestionV2 question)
     {
@@ -54,7 +93,26 @@ public class QuestionController : ControllerBase
         return CreatedAtAction(nameof(GetQuestion), new { id = question.Id }, question);
     }
 
+    /// <summary>
+    /// Partly update an existing question
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="json"></param>
+    /// <returns></returns>
+    /// <response code="200">Question updated</response>
+    /// <response code="400">Request has incorrect values</response>
+    /// <response code="401">User unauthorized</response>
+    /// <response code="403">User haven't access</response>
+    /// <response code="404">Specified question doesn't exists</response>
     [HttpPatch("{id:int}")]
+    [TypeFilter(typeof(JwtTokenFilter))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> PatchQuestion(int id, [FromBody] JsonElement json)
     {
         var question = await _context.QuestionsV2.FindAsync(id);
@@ -73,7 +131,26 @@ public class QuestionController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Deletes a question
+    /// </summary>
+    /// <remarks>Currently not supported yet</remarks>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    /// <response code="200">Question deleted</response>
+    /// <response code="400">Request has incorrect values</response>
+    /// <response code="401">User unauthorized</response>
+    /// <response code="403">User haven't access</response>
+    /// <response code="404">Specified quiz doesn't exists</response>
     [HttpDelete("{id:int}")]
+    [TypeFilter(typeof(JwtTokenFilter))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> DeleteQuestion(int id)
     {
         var question = await _context.QuestionsV2.FindAsync(id);
@@ -85,6 +162,26 @@ public class QuestionController : ControllerBase
         return Ok();
     }
 
+    /// <summary>
+    /// Update an existing question
+    /// </summary>
+    /// <remarks>Currently not supported yet</remarks>
+    /// <param name="id"></param>
+    /// <param name="question"></param>
+    /// <returns></returns>
+    /// <response code="200">Question updated</response>
+    /// <response code="400">Request has incorrect values</response>
+    /// <response code="401">User unauthorized</response>
+    /// <response code="403">User haven't access</response>
+    /// <response code="404">Specified question doesn't exists</response>
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> PutQuestion(int id) => Ok();
+    [TypeFilter(typeof(JwtTokenFilter))]
+    [Produces("application/json")]
+    [Consumes("application/json")]
+    [ProducesResponseType(typeof(OkResult), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    public async Task<IActionResult> PutQuestion(int id, [FromBody] QuestionV2 question) => Ok();
 }

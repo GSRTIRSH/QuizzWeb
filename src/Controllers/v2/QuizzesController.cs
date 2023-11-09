@@ -79,10 +79,10 @@ public class QuizzesController : ControllerBase
     [HttpGet("{id:int}")]
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(QuizV2), 200)]
+    [ProducesResponseType(typeof(QuizV2), 200)] /*
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]*/
     public async Task<ActionResult<QuizV2>> GetQuiz(int id)
     {
         var quiz = await _context.Quizzes
@@ -110,10 +110,10 @@ public class QuizzesController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(QuizV2), 201)]
+    [ProducesResponseType(typeof(QuizV2), 201)] /*
     [ProducesResponseType(typeof(BadRequestResult), 400)]
     [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
+    [ProducesResponseType(typeof(ForbidResult), 403)]*/
     public async Task<ActionResult> PostQuiz(QuizV2 quizV2)
     {
         if (!ValidateToken(quizV2, out var result)) return result;
@@ -137,13 +137,13 @@ public class QuizzesController : ControllerBase
     /// <response code="404">Specified quiz doesn't exists</response>
     [HttpPatch("{id:int}")]
     [TypeFilter(typeof(JwtTokenFilter))]
-    [Produces("application/json")]
+    [Produces("text/plain")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
+    /*[ProducesResponseType(typeof(OkResult), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
     [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]*/
     public async Task<IActionResult> PatchQuiz(int id, [FromBody] JsonElement json)
     {
         var quiz = await _context.Quizzes.FindAsync(id);
@@ -195,13 +195,13 @@ public class QuizzesController : ControllerBase
     /// <response code="404">Specified quiz doesn't exists</response>
     [HttpDelete("{id:int}")]
     [TypeFilter(typeof(JwtTokenFilter))]
-    [Produces("application/json")]
+    [Produces("text/plain")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
+    /*[ProducesResponseType(typeof(OkResult), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
     [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]*/
     public async Task<IActionResult> DeleteQuiz(int id)
     {
         var quiz = await _context.Quizzes.FindAsync(id);
@@ -229,13 +229,13 @@ public class QuizzesController : ControllerBase
     /// <response code="404">Specified quiz doesn't exists</response>
     [HttpPut("{id:int}")]
     [TypeFilter(typeof(JwtTokenFilter))]
-    [Produces("application/json")]
+    [Produces("text/plain")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
+    /*[ProducesResponseType(typeof(OkResult), 200)]
     [ProducesResponseType(typeof(BadRequestResult), 400)]
     [ProducesResponseType(typeof(UnauthorizedResult), 401)]
     [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]*/
     public async Task<IActionResult> PutQuiz(int id, [FromBody] QuizV2 quizV2) => Ok();
 
     private bool ValidateToken(QuizV2 quiz, out ActionResult result)

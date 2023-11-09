@@ -19,7 +19,7 @@ namespace QuizzWebApi.Controllers;
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
-    private readonly ILogger<AuthController> _logger;
+    //private readonly ILogger<AuthController> _logger;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly JwtConfig _jwtConfig;
@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
         RoleManager<IdentityRole> roleManager,
         IOptionsMonitor<JwtConfig> optionsMonitor)
     {
-        _logger = logger;
+        //_logger = logger;
         _userManager = userManager;
         _roleManager = roleManager;
         _jwtConfig = optionsMonitor.CurrentValue;
@@ -56,16 +56,18 @@ public class AuthController : ControllerBase
     /// <returns></returns>
     /// <response code="200">Returns full user data</response>
     /// <response code="200">Returns short user data</response> 
+    /// <response code="404">User with specified Id not exists</response> 
     [HttpGet]
     [Route("user")]
     [ProducesResponseType(typeof(IdentityUser), 200)]
     [ProducesResponseType(typeof(UserDto), 200)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<ActionResult> GetUser([FromQuery] string id, [FromQuery] bool full)
     {
         var u = await _userManager.FindByIdAsync(id);
+        if (u is null) return NotFound();
 
         var roles = await _userManager.GetRolesAsync(u);
-
         if (full) return Ok(u);
 
         var userDto = new UserDto()
@@ -88,7 +90,6 @@ public class AuthController : ControllerBase
     public async Task<List<UserDto>> Get()
     {
         var users = await _userManager.Users.ToListAsync();
-
         var usersDto = new List<UserDto>();
 
         foreach (var user in users)
@@ -102,7 +103,6 @@ public class AuthController : ControllerBase
                 EmailConfirmed = user.EmailConfirmed,
                 Roles = roles.ToList()
             };
-
             usersDto.Add(userDto);
         }
 
@@ -133,7 +133,6 @@ public class AuthController : ControllerBase
         }
 
         var emailExists = await _userManager.FindByEmailAsync(registrationDto.Email);
-
         if (emailExists != null)
             return BadRequest(new AuthErrorResult()
             {

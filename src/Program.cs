@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
@@ -32,6 +31,17 @@ public class Program
         builder.Services.AddScoped<ApiAuthFilter>();
         builder.Services.AddScoped<JwtTokenFilter>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+        if (!builder.Environment.IsDevelopment())
+        {
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithMachineName()
+                .MinimumLevel.Information()
+                .WriteTo.Seq("http://api-seq:5341")
+                .CreateLogger();
+            builder.Host.UseSerilog();
+        }
 
         builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
@@ -176,7 +186,8 @@ public class Program
 
         //using (var scope = app.Services.CreateScope()) { }
 
-        //if (app.Environment.IsDevelopment()) { }
+        if (!app.Environment.IsDevelopment())
+            app.UseSerilogRequestLogging();
 
         app.UseSwagger();
         app.UseSwaggerUI(options =>
