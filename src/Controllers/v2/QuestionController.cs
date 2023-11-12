@@ -121,7 +121,6 @@ public class QuestionController : ControllerBase
     /// <summary>
     /// Deletes a question
     /// </summary>
-    /// <remarks>Currently not supported yet</remarks>
     /// <param name="id"></param>
     /// <returns></returns>
     /// <response code="200">Question deleted</response>

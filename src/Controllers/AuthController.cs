@@ -40,6 +40,7 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Finds users who belongs to the role
     /// </summary>
+    /// <remarks>Require administrator role</remarks>
     /// <param name="role">role name</param>
     /// <returns></returns>
     [HttpGet]
@@ -54,6 +55,7 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Returns user data
     /// </summary>
+    /// <remarks>Require administrator role</remarks>
     /// <param name="id">user id</param>
     /// <param name="full">model view type is full</param>
     /// <returns></returns>
@@ -66,7 +68,7 @@ public class AuthController : ControllerBase
     [Route("user")]
     [ProducesResponseType(typeof(UserDto), 200)]
     [ProducesResponseType(typeof(IdentityUser), 200)]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User, Admin")]
     public async Task<ActionResult> GetUser([FromQuery] string id, [FromQuery] bool full)
     {
         var u = await _userManager.FindByIdAsync(id);
@@ -89,6 +91,7 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Returns a list of all users
     /// </summary>
+    /// <remarks>Require administrator role</remarks>
     /// <returns></returns>
     [HttpGet]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]

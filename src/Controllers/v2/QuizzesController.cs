@@ -34,6 +34,7 @@ public class QuizzesController : ControllerBase
     /// <summary>
     /// Returns a list of quizzes that satisfy the conditions
     /// </summary>
+    /// <remarks>Require administrator role</remarks>
     /// <param name="limit">count of returned quizzes</param>
     /// <param name="category"></param>
     /// <param name="difficulty"></param>
