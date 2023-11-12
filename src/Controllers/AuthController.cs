@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Unicode;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -109,6 +110,35 @@ public class AuthController : ControllerBase
         return usersDto;
     }
 
+    [HttpPost]
+    [Route("token")]
+    public async Task<bool> IsLogin(string token)
+    {
+        var key = Encoding.UTF8.GetBytes("E73695B5A82D676AE38BF3A0");
+        var tokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = false
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        try
+        {
+            tokenHandler.ValidateToken(token, tokenValidationParameters, out var validatedToken);
+            var jwt = (JwtSecurityToken)validatedToken;
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
     /// <summary>
     /// Register a new user
     /// </summary>
@@ -117,8 +147,8 @@ public class AuthController : ControllerBase
     /// <response code="201">User has created</response>
     /// <response code="400">Request has incorrect values</response>
     [HttpPost]
-    [Consumes("application/json")]
     [Route("register")]
+    [Consumes("application/json")]
     [ProducesResponseType(typeof(RegistrationRequestResponse), 201)]
     [ProducesResponseType(typeof(AuthErrorResult), 400)]
     public async Task<ActionResult<AuthResult>> Register([FromBody] UserRegistrationDto registrationDto)

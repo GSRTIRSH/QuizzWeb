@@ -46,7 +46,8 @@ public class Program
         builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
-            }).AddRoles<IdentityRole>()
+            })
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<IdentityContext>();
         builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
         builder.Services.AddAuthentication(options =>

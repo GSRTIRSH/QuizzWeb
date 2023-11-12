@@ -9,7 +9,6 @@ public class RelationHeathCheck<T> : IHealthCheck where T : DbContext
 {
     private readonly T _context;
 
-
     public RelationHeathCheck(T context)
     {
         _context = context;
