@@ -15,6 +15,8 @@ import InputNumber from 'primevue/inputnumber'
 import Card from 'primevue/card'
 import Chip from 'primevue/chip'
 import InlineMessage from 'primevue/inlinemessage'
+import Toast from 'primevue/toast'
+import ToastService from 'primevue/toastservice';
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -27,7 +29,9 @@ app.component('InputNumber', InputNumber)
 app.component('Card', Card)
 app.component('Chip', Chip)
 app.component('InlineMessage', InlineMessage)
+app.component('Toast', Toast)
 
+app.use(ToastService);
 app.use(pinia)
 app.use(router)
 app.use(PrimeVue);

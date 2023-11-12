@@ -1,24 +1,41 @@
+import type { 
+    getUserResponse,
+    signinArgs,
+    signupArgs 
+} from '@/types/auth'
 import { config } from '@/config'
 
-export const loginRequest = async (credentials: any) => {
-    try {
-        const result = await fetch(`${config.API_URL}/v2/Auth/login`, {
-            method: 'POST',
-            headers: {
-                'x-api-key': config.TOKEN,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(credentials)
-        })
-        const data = await result.json()
-        return data
-    } catch (err) {
-        console.log(err)
+export const checkTokenValidityRequest = async (token: string): Promise<boolean> => {
+    const response = await fetch(`${config.API_URL}/v2/Auth/token`, {
+        method: 'GET',
+        headers: {
+            'x-api-key': config.TOKEN,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+    if (response.status === 200) {
+        return true;
+    } else {
+        return false;
     }
-    
 }
 
-export const regRequest = async (credentials: any) => {
+export const loginRequest = async (credentials: signinArgs) => {
+    const result = await fetch(`${config.API_URL}/v2/Auth/login`, {
+        method: 'POST',
+        headers: {
+            'x-api-key': config.TOKEN,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(credentials)
+    })
+    const data = await result.json()
+    return data
+}
+
+export const regRequest = async (credentials: signupArgs) => {
     const result = await fetch(`${config.API_URL}/v2/Auth/Register`, {
         method: 'POST',
         headers: {
@@ -31,15 +48,15 @@ export const regRequest = async (credentials: any) => {
     return data
 }
 
-export const getUserRequest = async () => {
+export const getUserInfoRequest = async (id: string, token: string): Promise<getUserResponse> => {
     const result = await fetch(
-        `${config.API_URL}/v2/Auth/user?id=51d9c82a-d721-4b35-9bb8-8b2dcda6d2dd`,
+        `${config.API_URL}/v2/Auth/user?id=${id}`,
         {
             method: 'GET',
             headers: {
                 'x-api-key': config.TOKEN,
                 'Content-Type': 'application/json',
-                Authorization: `Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjUxZDljODJhLWQ3MjEtNGIzNS05YmI4LThiMmRjZGE2ZDJkZCIsInN1YiI6Ik9jaGt5MTIzMjFAZ21haWwuY29tIiwiZW1haWwiOiJPY2hreTEyMzIxQGdtYWlsLmNvbSIsImp0aSI6IjAzODhkYzllLTZmZjUtNGJhNC04ZjY2LTBlOTQyNjE5NjZiNCIsIm5iZiI6MTY5ODY2OTIzNiwiZXhwIjoxNjk4NjgzNjM2LCJpYXQiOjE2OTg2NjkyMzZ9.uuRzGAD3yydXzDP5jUK9JFsKmTa5OobyydOCAt05r0VkjcltZ0rwC-zLMxhDQr57DAXrp_IOt5HneeN5kC55og`
+                Authorization: `Bearer ${token}`
             }
         }
     )

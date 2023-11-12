@@ -51,7 +51,6 @@
 
 <script setup lang="ts">
 import QuizCard from '@/components/QuizCard.vue';
-import { useRouter } from 'vue-router';
 import img_js from '@/assets/images/JavaScriptLogo.png';
 import img_html5 from '@/assets/images/HtmlLogo.png';
 import img_php from '@/assets/images/PHPLogo.jpg';
@@ -62,6 +61,7 @@ import img_sql from '@/assets/images/SqlLogo.jpg';
 import img_kubernetes from '@/assets/images/KubernetesLogo.png';
 import img_linux from '@/assets/images/LinuxLogo.jpg';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const cardDialogVisible = ref(false);

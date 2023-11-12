@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { useForm, useField } from 'vee-validate'
-import { ref } from 'vue'
 import * as Yup from 'yup'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/store/authStore'
+import { toRefs, watch } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import { useAsyncState } from '@vueuse/core'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const { signup } = useAuthStore()
+const { errors, isAuth } = toRefs(useAuthStore())
+const toast = useToast()
 
 interface RegistrationForm {
     name: string
@@ -33,11 +40,24 @@ const { value: password, errors: passwordErrors } =
 const { value: confPassword, errors: confPasswordErrors } =
     useField<RegistrationForm['confPassword']>('confPassword')
 
-const onSubmit = handleSubmit((values) => {
-    signup({
+const { isLoading: isSignupLoading, execute: signupExecute } = useAsyncState(
+    (values) => signup(values),
+    null,
+    { immediate: false }
+)
+
+const onSubmit = handleSubmit(async(values) => {
+    await signupExecute(undefined, {
         name: values.name,
         email: values.email,
         password: values.password
+    })
+    if (isAuth.value) router.push({name: 'Main'})
+})
+
+watch(errors, () => {
+    errors.value.forEach((error) => {
+        toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
     })
 })
 </script>
@@ -91,9 +111,9 @@ const onSubmit = handleSubmit((values) => {
                 }"
             />
 
-            <Button type="submit" class="tw-justify-center tw-text-2xl"
-                ><span>continue</span></Button
-            >
+            <Button type="submit" class="tw-justify-center tw-text-2xl" :loading="isSignupLoading">
+                <span>continue</span>
+            </Button>
         </div>
         <div class="tw-flex tw-items-center">
             <div class="tw-h-1 tw-w-full tw-bg-black" />
@@ -111,6 +131,7 @@ const onSubmit = handleSubmit((values) => {
         >
             <span>log in</span>
         </Button>
+        <Toast />
     </form>
 </template>
 

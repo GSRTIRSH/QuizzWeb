@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { useForm, useField } from 'vee-validate'
-import { ref } from 'vue'
 import * as Yup from 'yup'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/store/authStore'
+import { toRefs, watch } from 'vue'
+import { useToast } from 'primevue/usetoast'
+import { useAsyncState } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
+const { errors, isAuth } = toRefs(useAuthStore())
 const { signin } = useAuthStore()
+const toast = useToast()
 
 interface LoginForm {
     name: string
@@ -24,8 +30,21 @@ const { handleSubmit } = useForm<LoginForm>({
 const { value: name, errors: loginErrors } = useField<LoginForm['name']>('name')
 const { value: password, errors: passwordErrors } = useField<LoginForm['password']>('password')
 
-const onSubmit = handleSubmit(async (values) => {
-    signin(values)
+const {
+  isLoading: isSigninLoading,
+  execute: signinExecute
+} = useAsyncState((values) => signin(values), null, { immediate: false })
+
+const onSubmit = handleSubmit(async(values) => {
+    await signinExecute(undefined, values)
+    if (isAuth.value) router.push({name: 'Main'})
+})
+
+
+watch(errors, () => {
+    errors.value.forEach(error => {
+        toast.add({ severity: 'error', summary: 'Error', detail: error, life: 5000 })
+    });
 })
 </script>
 
@@ -38,10 +57,10 @@ const onSubmit = handleSubmit(async (values) => {
             <InputText
                 v-model="name"
                 size="large"
-                name="email"
+                name="login"
                 autocomplete="login"
                 id="login"
-                placeholder="Email"
+                placeholder="Login"
                 :class="{ 'p-invalid': loginErrors.length }"
             />
             <InputText
@@ -54,7 +73,13 @@ const onSubmit = handleSubmit(async (values) => {
                 placeholder="Password"
                 :class="{ 'p-invalid': passwordErrors.length }"
             />
-            <Button type="submit" class="tw-justify-center tw-text-2xl"><span>log in</span></Button>
+            <Button 
+                type="submit"
+                class="tw-justify-center tw-text-2xl"
+                :loading="isSigninLoading"
+            >
+                <span>log in</span>
+            </Button>
         </div>
         <div class="tw-flex tw-items-center">
             <div class="tw-h-1 tw-w-full tw-bg-black" />
@@ -72,5 +97,6 @@ const onSubmit = handleSubmit(async (values) => {
         >
             <span>sign up</span>
         </Button>
+        <Toast />
     </form>
 </template>

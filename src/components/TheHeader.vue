@@ -1,3 +1,10 @@
+<script setup lang="ts">
+import { useAuthStore } from '@/store/authStore'
+import { toRefs } from 'vue'
+
+const { isAuth, userData } = toRefs(useAuthStore())
+</script>
+
 <template>
     <header class="tw-h-16 tw-bg-secondary-background">
         <div class="tw-mx-auto tw-max-w-6xl tw-h-full tw-flex tw-justify-between tw-items-center tw-px-4">
@@ -8,7 +15,8 @@
                 <span class="tw-text-base-yellow">BUSTERS</span>
             </span>
             <div class="tw-flex">
-                <Button @click="$router.push({name: 'Auth'})">
+                <Avatar v-if="isAuth" :label="userData?.userName[0]" class="mr-2" size="large" />
+                <Button v-else @click="$router.push({name: 'Auth'})">
                     Log in
                 </Button>
                 <div v-if="false" class="tw-flex tw-items-center tw-text-base-orange">
@@ -19,7 +27,5 @@
         </div>
     </header>
 </template>
-
-<script setup lang="ts"></script>
 
 
