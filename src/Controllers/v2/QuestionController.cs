@@ -53,10 +53,6 @@ public class QuestionController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<ActionResult<QuestionV2>> GetQuestion(int id)
     {
         var quiz = await _context.QuestionsV2.FindAsync(id);
@@ -80,10 +76,6 @@ public class QuestionController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
     [RequireApiKey(isAdminKey: true)]
     public async Task<ActionResult> PostQuestion(QuestionV2 question)
     {
@@ -108,11 +100,6 @@ public class QuestionController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> PatchQuestion(int id, [FromBody] JsonElement json)
     {
         var question = await _context.QuestionsV2.FindAsync(id);
@@ -146,11 +133,6 @@ public class QuestionController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> DeleteQuestion(int id)
     {
         var question = await _context.QuestionsV2.FindAsync(id);
@@ -178,10 +160,5 @@ public class QuestionController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
     public async Task<IActionResult> PutQuestion(int id, [FromBody] QuestionV2 question) => Ok();
 }

@@ -15,7 +15,6 @@ using QuizzWebApi.Repository;
 using QuizzWebApi.Services.Health;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Serilog;
-using Serilog.Configuration;
 
 namespace QuizzWebApi;
 
@@ -49,6 +48,7 @@ public class Program
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<IdentityContext>();
+
         builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
         builder.Services.AddAuthentication(options =>
             {
@@ -58,16 +58,19 @@ public class Program
             })
             .AddJwtBearer(jwt =>
             {
-                var key = Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value);
+                var key = Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:Secret"]!);
                 jwt.SaveToken = true;
                 jwt.TokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    RequireExpirationTime = false,
-                    ValidateLifetime = false
+                    ValidateIssuer = true,
+                    ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
+                    ValidateAudience = true,
+                    ValidAudience = builder.Configuration["JwtConfig:Audience"],
+                    ValidateLifetime = true,
+                    RequireExpirationTime = true,
+                    ClockSkew = TimeSpan.Zero
                 };
             });
         builder.Services.AddAuthorization();
@@ -154,7 +157,7 @@ public class Program
                 options.SubstituteApiVersionInUrl = true;
             });
 
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        var connectionString = configuration.GetConnectionString("DefaultConnection")!;
 
         #region DbContext
 

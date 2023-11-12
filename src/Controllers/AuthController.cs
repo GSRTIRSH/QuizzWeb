@@ -1,8 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Unicode;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +44,7 @@ public class AuthController : ControllerBase
     /// <returns></returns>
     [HttpGet]
     [Route("role")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public async Task<List<IdentityUser>> GetUsersWithRole([FromQuery] string role)
     {
         var c = await _userManager.GetUsersInRoleAsync(role);
@@ -56,21 +58,22 @@ public class AuthController : ControllerBase
     /// <param name="full">model view type is full</param>
     /// <returns></returns>
     /// <response code="200">Returns full user data</response>
-    /// <response code="200">Returns short user data</response> 
+    /// <response code="200">Returns short user data</response>
+    /// <response code="401">User unauthorized</response>
+    /// <response code="403">User haven't access</response>
     /// <response code="404">User with specified Id not exists</response> 
     [HttpGet]
     [Route("user")]
-    [ProducesResponseType(typeof(IdentityUser), 200)]
     [ProducesResponseType(typeof(UserDto), 200)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(IdentityUser), 200)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public async Task<ActionResult> GetUser([FromQuery] string id, [FromQuery] bool full)
     {
         var u = await _userManager.FindByIdAsync(id);
         if (u is null) return NotFound();
-
-        var roles = await _userManager.GetRolesAsync(u);
         if (full) return Ok(u);
 
+        var roles = await _userManager.GetRolesAsync(u);
         var userDto = new UserDto()
         {
             Id = u.Id,
@@ -88,6 +91,7 @@ public class AuthController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public async Task<List<UserDto>> Get()
     {
         var users = await _userManager.Users.ToListAsync();
@@ -110,33 +114,18 @@ public class AuthController : ControllerBase
         return usersDto;
     }
 
-    [HttpPost]
+    /// <summary>
+    /// Check the validity of the token
+    /// </summary>
+    /// <returns></returns>
+    /// <response code="200">Valid token</response>
+    /// <response code="401">Unauthorized</response>
+    [HttpGet]
+    [Authorize]
     [Route("token")]
-    public async Task<bool> IsLogin(string token)
+    public OkResult IsLogin()
     {
-        var key = Encoding.UTF8.GetBytes("E73695B5A82D676AE38BF3A0");
-        var tokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            RequireExpirationTime = false,
-            ValidateLifetime = false
-        };
-
-        var tokenHandler = new JwtSecurityTokenHandler();
-
-        try
-        {
-            tokenHandler.ValidateToken(token, tokenValidationParameters, out var validatedToken);
-            var jwt = (JwtSecurityToken)validatedToken;
-            return true;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+        return Ok();
     }
 
     /// <summary>
@@ -218,11 +207,11 @@ public class AuthController : ControllerBase
     /// <param name="loginDto">login data model</param>
     /// <returns>ActionResult</returns>
     /// <response code="200">User has login</response>
-    /// <response code="400">Request has incorrect values</response>
+    /// <response code="401">Request has incorrect values</response>
     [HttpPost]
     [Route("login")]
     [ProducesResponseType(typeof(RegistrationRequestResponse), 200)]
-    [ProducesResponseType(typeof(AuthErrorResult), 400)]
+    [ProducesResponseType(typeof(AuthErrorResult), 401)]
     public async Task<ActionResult<AuthResult>> Login([FromBody] UserLoginDto loginDto)
     {
         if (!ModelState.IsValid)
@@ -231,7 +220,7 @@ public class AuthController : ControllerBase
         var exitingUser = await _userManager.FindByNameAsync(loginDto.Name);
 
         if (exitingUser == null)
-            return BadRequest(new AuthErrorResult()
+            return Unauthorized(new AuthErrorResult()
             {
                 Result = false,
                 Errors = new List<string>() { "Invalid login or password" }
@@ -240,7 +229,7 @@ public class AuthController : ControllerBase
         var isPasswordValid = await _userManager.CheckPasswordAsync(exitingUser, loginDto.Password);
 
         if (!isPasswordValid)
-            return BadRequest(new AuthErrorResult()
+            return Unauthorized(new AuthErrorResult()
             {
                 Result = false,
                 Errors = new List<string>() { "Invalid login or password" }
@@ -257,9 +246,7 @@ public class AuthController : ControllerBase
     private async Task<string> GenerateJwtToken(IdentityUser user)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
-
         var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret);
-
         var c = await _userManager.GetRolesAsync(user);
 
         var tokenDescriptor = new SecurityTokenDescriptor()
@@ -272,7 +259,9 @@ public class AuthController : ControllerBase
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("role", c?.First() ?? "User")
             }),
-            Expires = DateTime.Now.AddHours(4),
+            Issuer = _jwtConfig.Issuer,
+            Audience = _jwtConfig.Audience,
+            Expires = DateTime.Now.AddMinutes(15),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha512)

@@ -79,10 +79,7 @@ public class QuizzesController : ControllerBase
     [HttpGet("{id:int}")]
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(QuizV2), 200)] /*
-    [ProducesResponseType(typeof(NotFoundResult), 404)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]*/
+    [ProducesResponseType(typeof(QuizV2), 200)]
     public async Task<ActionResult<QuizV2>> GetQuiz(int id)
     {
         var quiz = await _context.Quizzes
@@ -92,7 +89,7 @@ public class QuizzesController : ControllerBase
 
         if (quiz == null) return NotFound();
 
-        if (!ValidateToken(quiz, out var result)) return result;
+        if (!ValidateAccess(quiz, out var result)) return result;
 
         return quiz;
     }
@@ -110,13 +107,10 @@ public class QuizzesController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ProducesResponseType(typeof(QuizV2), 201)] /*
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]*/
+    [ProducesResponseType(typeof(QuizV2), 201)]
     public async Task<ActionResult> PostQuiz(QuizV2 quizV2)
     {
-        if (!ValidateToken(quizV2, out var result)) return result;
+        if (!ValidateAccess(quizV2, out var result)) return result;
 
         _context.Quizzes.Add(quizV2);
         await _context.SaveChangesAsync();
@@ -139,11 +133,6 @@ public class QuizzesController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("text/plain")]
     [Consumes("application/json")]
-    /*[ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]*/
     public async Task<IActionResult> PatchQuiz(int id, [FromBody] JsonElement json)
     {
         var quiz = await _context.Quizzes.FindAsync(id);
@@ -152,7 +141,7 @@ public class QuizzesController : ControllerBase
         var updateData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json.ToString());
         if (updateData == null) return BadRequest();
 
-        if (!ValidateToken(quiz, out var result)) return result;
+        if (!ValidateAccess(quiz, out var result)) return result;
 
         if (updateData.ContainsKey("title"))
         {
@@ -197,17 +186,12 @@ public class QuizzesController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("text/plain")]
     [Consumes("application/json")]
-    /*[ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]*/
     public async Task<IActionResult> DeleteQuiz(int id)
     {
         var quiz = await _context.Quizzes.FindAsync(id);
         if (quiz == null) return NotFound();
 
-        if (!ValidateToken(quiz, out var result)) return result;
+        if (!ValidateAccess(quiz, out var result)) return result;
 
         _context.Quizzes.Remove(quiz);
         await _context.SaveChangesAsync();
@@ -231,14 +215,9 @@ public class QuizzesController : ControllerBase
     [TypeFilter(typeof(JwtTokenFilter))]
     [Produces("text/plain")]
     [Consumes("application/json")]
-    /*[ProducesResponseType(typeof(OkResult), 200)]
-    [ProducesResponseType(typeof(BadRequestResult), 400)]
-    [ProducesResponseType(typeof(UnauthorizedResult), 401)]
-    [ProducesResponseType(typeof(ForbidResult), 403)]
-    [ProducesResponseType(typeof(NotFoundResult), 404)]*/
     public async Task<IActionResult> PutQuiz(int id, [FromBody] QuizV2 quizV2) => Ok();
 
-    private bool ValidateToken(QuizV2 quiz, out ActionResult result)
+    private bool ValidateAccess(QuizV2 quiz, out ActionResult result)
     {
         result = Ok();
 

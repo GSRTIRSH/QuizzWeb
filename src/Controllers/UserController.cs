@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using QuizzWebApi.Configuration.Filters;
-using QuizzWebApi.Data;
 using QuizzWebApi.Models;
 using QuizzWebApi.Repository;
 
