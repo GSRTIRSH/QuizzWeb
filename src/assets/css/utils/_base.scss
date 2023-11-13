@@ -1,5 +1,10 @@
 body::-webkit-scrollbar {
-  display: none;
+  width: 8px;             
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: $base-yellow;    
+  border-radius: 2px;       
 }
 
 html,
@@ -46,4 +51,8 @@ img {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0;
+}
+
+.base-shadow {
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
 }

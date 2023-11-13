@@ -2,6 +2,7 @@ import MainView from '@/views/MainView.vue';
 import AuthView from '@/views/AuthView.vue';
 import QuizView from '@/views/QuizView.vue';
 import ResultsView from '@/views/ResultsView.vue';
+import PersonalView from '@/views/PersonalView.vue';
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 
 const routes: Array<RouteRecordRaw> = [
@@ -14,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'Auth',
         path: '/auth',
         component: AuthView,
+    },
+    {
+        name: 'Personal',
+        path: '/personal',
+        component: PersonalView,
     },
     {
         name: 'Quiz',

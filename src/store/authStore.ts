@@ -26,7 +26,6 @@ export const useAuthStore = defineStore('authStore', () => {
         if (token && id) {
             checkTokenValidityRequest(token).then((isTokenValidity) => isAuth.value = isTokenValidity)
             getUserInfo(id, token)
-            console.log('id ', id, '\ntoken ', token)
         }
       });
 
@@ -38,7 +37,8 @@ export const useAuthStore = defineStore('authStore', () => {
 
             localStorage.setItem('token', successData.token)
             localStorage.setItem('id', successData.id)
-            
+
+            getUserInfo(successData.id, successData.token)
         } else {
             const errorData: authResponseError = data as authResponseError;
             errors.value = errorData.errors
@@ -54,7 +54,8 @@ export const useAuthStore = defineStore('authStore', () => {
 
             localStorage.setItem('token', successData.token)
             localStorage.setItem('id', successData.id)
-            
+
+            getUserInfo(successData.id, successData.token)
         } else {
             const errorData: authResponseError = data as authResponseError;
             errors.value = errorData.errors

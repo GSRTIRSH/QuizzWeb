@@ -3,7 +3,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import router from '@/router/router.js'
 import '@/assets/css/index.scss'
-import PrimeVue from 'primevue/config';
+import PrimeVue from 'primevue/config'
 import 'primeicons/primeicons.css'
 
 //primevue components
@@ -16,7 +16,9 @@ import Card from 'primevue/card'
 import Chip from 'primevue/chip'
 import InlineMessage from 'primevue/inlinemessage'
 import Toast from 'primevue/toast'
-import ToastService from 'primevue/toastservice';
+import ToastService from 'primevue/toastservice'
+import Tooltip from 'primevue/tooltip'
+import Textarea from 'primevue/textarea'
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -30,6 +32,9 @@ app.component('Card', Card)
 app.component('Chip', Chip)
 app.component('InlineMessage', InlineMessage)
 app.component('Toast', Toast)
+app.component('Textarea', Textarea)
+
+app.directive('tooltip', Tooltip)
 
 app.use(ToastService);
 app.use(pinia)
