@@ -231,7 +231,7 @@ public class Program
 
         app.MapControllers();
 
-        CreateAdminUser(app).Wait();
+        //CreateAdminUser(app).Wait();
 
         app.Run();
     }
