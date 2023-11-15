@@ -19,13 +19,11 @@ namespace QuizzWebApi.Controllers.v2;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User")]
 public class QuestionController : ControllerBase
 {
-    private readonly ILogger _logger;
     private readonly QuizContextV2 _context;
 
-    public QuestionController(QuizContextV2 context, ILogger logger)
+    public QuestionController(QuizContextV2 context)
     {
         _context = context;
-        _logger = logger;
     }
 
     /// <summary>

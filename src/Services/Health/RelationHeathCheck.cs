@@ -22,7 +22,7 @@ public class RelationHeathCheck<T> : IHealthCheck where T : DbContext
             {
                 QuizContext quizContext => quizContext.Quizzes.ToList(),
                 QuizContextV2 quizContextV2 => quizContextV2.QuestionsV2.ToList(),
-                UserContext userContext => userContext.Users.ToList(),
+                UserIdentityContext userContext => userContext.Users.ToList(),
                 IdentityContext identityContext => identityContext.Users.ToList(),
                 _ => throw new NotImplementedException()
             };

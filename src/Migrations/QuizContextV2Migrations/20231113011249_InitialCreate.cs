@@ -4,9 +4,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations
+namespace QuizzWebApi.Migrations.QuizContextV2Migrations
 {
-    public partial class init : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,7 +20,7 @@ namespace QuizzWebApi.Migrations
                     image_path = table.Column<string>(type: "text", nullable: false),
                     Category = table.Column<string>(type: "text", nullable: false),
                     Difficulty = table.Column<string>(type: "text", nullable: false),
-                    Author = table.Column<int>(type: "integer", nullable: false)
+                    Author = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -8,7 +8,7 @@ using QuizzWebApi.Data;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations.Quiz
+namespace QuizzWebApi.Migrations
 {
     [DbContext(typeof(QuizContext))]
     partial class QuizContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace QuizzWebApi.Migrations.Quiz
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.23")
+                .HasAnnotation("ProductVersion", "6.0.24")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);

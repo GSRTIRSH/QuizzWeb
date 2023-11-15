@@ -9,17 +9,17 @@ using QuizzWebApi.Data;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations.Quiz
+namespace QuizzWebApi.Migrations
 {
     [DbContext(typeof(QuizContext))]
-    [Migration("20231023140911_init")]
-    partial class init
+    [Migration("20231113011228_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.23")
+                .HasAnnotation("ProductVersion", "6.0.24")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);

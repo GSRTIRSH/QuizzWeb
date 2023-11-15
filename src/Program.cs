@@ -11,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using QuizzWebApi.Configuration;
 using QuizzWebApi.Configuration.Filters;
 using QuizzWebApi.Data;
+using QuizzWebApi.Models;
 using QuizzWebApi.Repository;
 using QuizzWebApi.Services.Health;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -38,16 +39,22 @@ public class Program
                 .Enrich.WithMachineName()
                 .MinimumLevel.Information()
                 .WriteTo.Seq("http://api-seq:5341")
+                .WriteTo.Console()
                 .CreateLogger();
             builder.Host.UseSerilog();
         }
 
-        builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+        builder.Services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredLength = 8;
             })
             .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<IdentityContext>();
+            .AddEntityFrameworkStores<UserIdentityContext>();
 
         builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
         builder.Services.AddAuthentication(options =>
@@ -137,7 +144,6 @@ public class Program
                     .AllowAnyOrigin()
                     .AllowAnyMethod()
                     .AllowAnyHeader();
-                /*.AllowCredentials();*/
             });
         });
 
@@ -161,7 +167,7 @@ public class Program
 
         #region DbContext
 
-        builder.Services.AddDbContext<UserContext>(options =>
+        builder.Services.AddDbContext<UserIdentityContext>(options =>
             options.UseNpgsql(connectionString));
 
         builder.Services.AddDbContext<QuizContext>(options =>
@@ -170,8 +176,8 @@ public class Program
         builder.Services.AddDbContext<QuizContextV2>(options =>
             options.UseNpgsql(connectionString));
 
-        builder.Services.AddDbContext<IdentityContext>(options =>
-            options.UseNpgsql(connectionString));
+        /*builder.Services.AddDbContext<IdentityContext>(options =>
+            options.UseNpgsql(connectionString));*/
 
         #endregion
 
@@ -179,8 +185,8 @@ public class Program
             .AddNpgSql(connectionString)
             .AddCheck<RelationHeathCheck<QuizContext>>(nameof(QuizContext))
             .AddCheck<RelationHeathCheck<QuizContextV2>>(nameof(QuizContextV2))
-            .AddCheck<RelationHeathCheck<UserContext>>(nameof(UserContext))
-            .AddCheck<RelationHeathCheck<IdentityContext>>(nameof(IdentityContext));
+            .AddCheck<RelationHeathCheck<UserIdentityContext>>(nameof(UserIdentityContext));
+        //.AddCheck<RelationHeathCheck<IdentityContext>>(nameof(IdentityContext));
 
         //builder.Services.AddAuthorization();
         //builder.Services.AddAuthentication();
@@ -225,7 +231,43 @@ public class Program
 
         app.MapControllers();
 
+        CreateAdminUser(app).Wait();
 
         app.Run();
+    }
+
+    private static async Task CreateAdminUser(IApplicationBuilder app)
+    {
+        var serviceProvider = app.ApplicationServices;
+
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+
+        const string roleName = "Admin";
+        var adminEmail = configuration["AdminUser:Email"];
+        var adminLogin = configuration["AdminUser:Login"];
+        var adminPassword = configuration["AdminUser:Password"];
+
+        var roleExists = await roleManager.RoleExistsAsync(roleName);
+
+        if (!roleExists)
+        {
+            await roleManager.CreateAsync(new IdentityRole(roleName));
+        }
+
+        var user = await userManager.FindByEmailAsync(adminEmail);
+
+        if (user == null)
+        {
+            user = new User()
+            {
+                UserName = adminLogin,
+                Email = adminEmail,
+            };
+            await userManager.CreateAsync(user, adminPassword);
+
+            await userManager.AddToRoleAsync(user, roleName);
+        }
     }
 }

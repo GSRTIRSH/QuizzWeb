@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations.Identity
+namespace QuizzWebApi.Migrations.UserIdentity
 {
-    public partial class identity : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,6 +29,8 @@ namespace QuizzWebApi.Migrations.Identity
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
+                    my_quizzes = table.Column<int[]>(type: "integer[]", nullable: true),
+                    image_path = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

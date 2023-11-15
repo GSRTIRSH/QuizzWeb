@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using QuizzWebApi.Configuration;
+using QuizzWebApi.Models;
 using QuizzWebApi.Models.Identity;
 
 namespace QuizzWebApi.Controllers;
@@ -22,12 +23,12 @@ namespace QuizzWebApi.Controllers;
 public class AuthController : ControllerBase
 {
     //private readonly ILogger<AuthController> _logger;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly JwtConfig _jwtConfig;
 
     public AuthController(ILogger<AuthController> logger,
-        UserManager<IdentityUser> userManager,
+        UserManager<User> userManager,
         RoleManager<IdentityRole> roleManager,
         IOptionsMonitor<JwtConfig> optionsMonitor)
     {
@@ -46,7 +47,7 @@ public class AuthController : ControllerBase
     [HttpGet]
     [Route("role")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-    public async Task<List<IdentityUser>> GetUsersWithRole([FromQuery] string role)
+    public async Task<List<User>> GetUsersWithRole([FromQuery] string role)
     {
         var c = await _userManager.GetUsersInRoleAsync(role);
         return c.ToList();
@@ -64,14 +65,14 @@ public class AuthController : ControllerBase
     /// <response code="401">User unauthorized</response>
     /// <response code="403">User haven't access</response>
     /// <response code="404">User with specified Id not exists</response> 
-    [HttpGet]
-    [Route("user")]
+    [HttpGet("{id:guid}/")]
+    //[Route("user")]
     [ProducesResponseType(typeof(UserDto), 200)]
     [ProducesResponseType(typeof(IdentityUser), 200)]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User, Admin")]
-    public async Task<ActionResult> GetUser([FromQuery] string id, [FromQuery] bool full)
+    public async Task<ActionResult> GetUser(Guid id, [FromQuery] bool full)
     {
-        var u = await _userManager.FindByIdAsync(id);
+        var u = await _userManager.FindByIdAsync(id.ToString());
         if (u is null) return NotFound();
         if (full) return Ok(u);
 
@@ -162,7 +163,7 @@ public class AuthController : ControllerBase
                 Errors = new List<string>() { "email already exists" }
             });
 
-        var newUser = new IdentityUser()
+        var newUser = new User()
         {
             Email = registrationDto.Email,
             UserName = registrationDto.Name,
@@ -246,7 +247,7 @@ public class AuthController : ControllerBase
         });
     }
 
-    private async Task<string> GenerateJwtToken(IdentityUser user)
+    private async Task<string> GenerateJwtToken(User user)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_jwtConfig.Secret);
@@ -264,7 +265,7 @@ public class AuthController : ControllerBase
             }),
             Issuer = _jwtConfig.Issuer,
             Audience = _jwtConfig.Audience,
-            Expires = DateTime.Now.AddMinutes(15),
+            Expires = DateTime.Now.AddHours(4),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha512)

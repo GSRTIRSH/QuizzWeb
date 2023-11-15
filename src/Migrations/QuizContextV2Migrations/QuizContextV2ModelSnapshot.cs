@@ -2,24 +2,22 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuizzWebApi.Data;
 
 #nullable disable
 
-namespace QuizzWebApi.Migrations
+namespace QuizzWebApi.Migrations.QuizContextV2Migrations
 {
     [DbContext(typeof(QuizContextV2))]
-    [Migration("20231023145524_v2")]
-    partial class v2
+    partial class QuizContextV2ModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.23")
+                .HasAnnotation("ProductVersion", "6.0.24")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -64,8 +62,9 @@ namespace QuizzWebApi.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Author")
-                        .HasColumnType("integer");
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -91,13 +90,11 @@ namespace QuizzWebApi.Migrations
 
             modelBuilder.Entity("QuizzWebApi.Models.QuestionV2", b =>
                 {
-                    b.HasOne("QuizzWebApi.Models.QuizV2", "QuizV2")
+                    b.HasOne("QuizzWebApi.Models.QuizV2", null)
                         .WithMany("Questions")
                         .HasForeignKey("QuizV2Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("QuizV2");
                 });
 
             modelBuilder.Entity("QuizzWebApi.Models.QuizV2", b =>

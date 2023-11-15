@@ -20,15 +20,13 @@ namespace QuizzWebApi.Controllers.v2;
 [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User, Admin")]
 public class QuizzesController : ControllerBase
 {
-    private readonly ILogger _logger;
     private readonly QuizContextV2 _context;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<User> _userManager;
 
-    public QuizzesController(QuizContextV2 context, UserManager<IdentityUser> userManager, ILogger logger)
+    public QuizzesController(QuizContextV2 context, UserManager<User> userManager)
     {
         _context = context;
         _userManager = userManager;
-        _logger = logger;
     }
 
     /// <summary>
@@ -41,8 +39,8 @@ public class QuizzesController : ControllerBase
     /// <returns></returns>
     /// <response code="200">quiz</response>
     [HttpGet]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     [Produces("application/json")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
     public async Task<IEnumerable<QuizV2>> GetQuizzes(
         [FromQuery] int? limit,
         [FromQuery] string? category,

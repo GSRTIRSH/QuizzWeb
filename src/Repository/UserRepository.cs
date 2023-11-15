@@ -6,9 +6,9 @@ namespace QuizzWebApi.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private UserContext _context;
+    private readonly UserIdentityContext _context;
     
-    public UserRepository(UserContext context)
+    public UserRepository(UserIdentityContext context)
     {
         _context = context;
     }
