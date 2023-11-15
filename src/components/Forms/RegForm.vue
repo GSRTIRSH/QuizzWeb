@@ -5,12 +5,9 @@ import { useAuthStore } from '@/store/authStore'
 import { toRefs, watch } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useAsyncState } from '@vueuse/core'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
 
 const { signup } = useAuthStore()
-const { errors, isAuth } = toRefs(useAuthStore())
+const { errors } = toRefs(useAuthStore())
 const toast = useToast()
 
 interface RegistrationForm {
@@ -46,14 +43,13 @@ const { isLoading: isSignupLoading, execute: signupExecute } = useAsyncState(
     { immediate: false }
 )
 
-const onSubmit = handleSubmit(async(values) => {
-    await signupExecute(undefined, {
+const onSubmit = handleSubmit((values) => 
+    signupExecute(undefined, {
         name: values.name,
         email: values.email,
         password: values.password
     })
-    if (isAuth.value) router.push({name: 'Main'})
-})
+)
 
 watch(errors, () => {
     errors.value.forEach((error) => {

@@ -1,6 +1,5 @@
 import type { 
-    getUserResponse,
-    signinArgs,
+    loginArgs,
     signupArgs 
 } from '@/types/auth'
 import { config } from '@/config'
@@ -22,7 +21,7 @@ export const checkTokenValidityRequest = async (token: string): Promise<boolean>
     }
 }
 
-export const loginRequest = async (credentials: signinArgs) => {
+export const loginRequest = async (credentials: loginArgs) => {
     const result = await fetch(`${config.API_URL}/v2/Auth/login`, {
         method: 'POST',
         headers: {
@@ -31,8 +30,7 @@ export const loginRequest = async (credentials: signinArgs) => {
         },
         body: JSON.stringify(credentials)
     })
-    const data = await result.json()
-    return data
+    return await result.json()
 }
 
 export const regRequest = async (credentials: signupArgs) => {
@@ -44,22 +42,5 @@ export const regRequest = async (credentials: signupArgs) => {
         },
         body: JSON.stringify(credentials)
     })
-    const data = await result.json()
-    return data
-}
-
-export const getUserInfoRequest = async (id: string, token: string): Promise<getUserResponse> => {
-    const result = await fetch(
-        `${config.API_URL}/v2/Auth/user?id=${id}`,
-        {
-            method: 'GET',
-            headers: {
-                'x-api-key': config.TOKEN,
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
-            }
-        }
-    )
-    const data = await result.json()
-    return data
+    return await result.json()
 }

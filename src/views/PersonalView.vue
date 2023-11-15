@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import AccountDetailsForm from '@/components/Forms/AccountDetailsForm.vue'
 import AdditionalInfoForm from '@/components/Forms/AdditionalInfoForm.vue'
+import { useAuthStore } from '@/store/authStore'
+import { useUserStore } from '@/store/userStore'
+import { toRefs } from 'vue'
+
+const { logout } = useAuthStore()
+const { userData, avatar } = toRefs(useUserStore())
+const { uploadAvatar } = useUserStore()
 </script>
 
 <template>
@@ -10,7 +17,7 @@ import AdditionalInfoForm from '@/components/Forms/AdditionalInfoForm.vue'
                 tw-grid
                 tw-grid-cols-1
                 sm:tw-grid-cols-2
-                sm:tw-grid-rows-[1fr_1fr_auto]
+                sm:tw-grid-rows-[auto_auto_auto]
                 md:tw-grid-cols-3 
                 md:tw-grid-rows-[auto_1fr] 
                 tw-gap-y-10 
@@ -20,21 +27,44 @@ import AdditionalInfoForm from '@/components/Forms/AdditionalInfoForm.vue'
                 tw-mb-10
             "
         >
-            <Card class="tw-bg-secondary-background sm:tw-row-start-1 sm:tw-row-end-3">
+            <Card 
+                class="
+                    tw-bg-secondary-background 
+                    sm:tw-row-start-2 
+                    sm:tw-row-end-4
+                    md:tw-row-start-1 
+                    md:tw-row-end-3
+                    tw-h-min
+                "
+            >
                 <template #header>
                     <img
-                        src="../assets/images/DevOpsLogo.png"
+                        :src="avatar"
                         class="tw-h-56 tw-w-full tw-object-cover tw-p-3"
                     />
                 </template>
                 <template #title>
-                    <div>Garvard</div>
+                    <div>{{ userData?.userName }}</div>
                 </template>
                 <template #subtitle>
-                    <div>Ochky123@gmail.com</div>
+                    <div>{{ userData?.email }}</div>
                 </template>
                 <template #footer>
-                    <Button outlined class="tw-w-full tw-justify-center"> log out </Button>
+                    <FileUpload 
+                        accept="image/png"
+                        mode="basic"
+                        customUpload
+                        :auto="true"
+                        @uploader="uploadAvatar($event)"
+                        class="tw-w-full tw-mb-2"
+                    />
+                    <Button
+                        @click="logout" 
+                        outlined 
+                        class="tw-w-full tw-justify-center"
+                    >
+                        log out
+                    </Button>
                 </template>
             </Card>
             <div 
@@ -45,8 +75,8 @@ import AdditionalInfoForm from '@/components/Forms/AdditionalInfoForm.vue'
                     tw-gap-4
                     sm:tw-grid-cols-[1fr_auto_1fr_auto_1fr]
                     sm:tw-grid-rows-none
-                    sm:tw-row-start-3
-                    sm:tw-row-end-5
+                    sm:tw-row-start-1
+                    sm:tw-row-end-2
                     sm:tw-col-start-1 
                     sm:tw-col-end-3
                     md:tw-row-start-1
@@ -93,10 +123,29 @@ import AdditionalInfoForm from '@/components/Forms/AdditionalInfoForm.vue'
                     </div>
                 </div> 
             </div>
-            <div class="tw-bg-secondary-background tw-h-full tw-w-full tw-rounded-sm base-shadow tw-p-4">
+            <div 
+                class="
+                    tw-bg-secondary-background 
+                    tw-w-full 
+                    tw-rounded-sm 
+                    base-shadow 
+                    tw-p-4
+                    tw-h-min
+                    
+                "
+            >
                 <AccountDetailsForm/>
             </div>
-            <div class="tw-bg-secondary-background tw-h-full tw-w-full tw-rounded-sm base-shadow tw-p-4">
+            <div 
+                class="
+                    tw-bg-secondary-background 
+                    tw-w-full 
+                    tw-rounded-sm 
+                    base-shadow 
+                    tw-p-4
+                    tw-h-min
+                "
+            >
                 <AdditionalInfoForm/>
             </div>
         </div>

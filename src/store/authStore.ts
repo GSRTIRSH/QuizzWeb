@@ -2,34 +2,34 @@ import type {
     authResponse, 
     authResponseError, 
     authResponseSuccess,
-    getUserResponse,
-    signinArgs,
+    loginArgs,
     signupArgs
 } from '@/types/auth'
+import { checkTokenValidityRequest, loginRequest, regRequest } from '@/api/authRequests'
 import { defineStore } from 'pinia'
 import { ref, onBeforeMount } from 'vue'
-import { 
-    checkTokenValidityRequest,
-    loginRequest, 
-    regRequest, 
-    getUserInfoRequest
-} from '@/api/authRequests'
+import { useUserStore } from '../store/userStore'
+import { useRouter } from 'vue-router'
+
 
 export const useAuthStore = defineStore('authStore', () => {
+    const router = useRouter()
+    const { getUserInfo } = useUserStore()
+    
     const errors = ref([''])
     const isAuth = ref(false)
-    const userData = ref<getUserResponse>()
 
     onBeforeMount(() => {
         const token = localStorage.getItem('token')
         const id = localStorage.getItem('id')
         if (token && id) {
             checkTokenValidityRequest(token).then((isTokenValidity) => isAuth.value = isTokenValidity)
-            getUserInfo(id, token)
+
+            getUserInfo(id)
         }
       });
 
-    const signin = async (credentials: signinArgs) => {
+    const login = async (credentials: loginArgs) => {
         const data: authResponse = await loginRequest(credentials)
         if (data.result) {
             const successData: authResponseSuccess = data as authResponseSuccess
@@ -38,12 +38,20 @@ export const useAuthStore = defineStore('authStore', () => {
             localStorage.setItem('token', successData.token)
             localStorage.setItem('id', successData.id)
 
-            getUserInfo(successData.id, successData.token)
+            getUserInfo(successData.id)
+
+            router.push({name: 'Main'})
         } else {
             const errorData: authResponseError = data as authResponseError;
             errors.value = errorData.errors
         }
-        
+    }
+
+    const logout = () => {
+        isAuth.value = false
+        localStorage.removeItem('token')
+        localStorage.removeItem('id')
+        router.push({name: 'Main'})
     }
 
     const signup = async (credentials: signupArgs) => {
@@ -54,25 +62,21 @@ export const useAuthStore = defineStore('authStore', () => {
 
             localStorage.setItem('token', successData.token)
             localStorage.setItem('id', successData.id)
+            
+            getUserInfo(successData.id)
 
-            getUserInfo(successData.id, successData.token)
+            router.push({name: 'Main'})
         } else {
             const errorData: authResponseError = data as authResponseError;
             errors.value = errorData.errors
         }
     }
-    const getUserInfo = async (id: string, token: string) => {
-        const data = await getUserInfoRequest(id, token)
-        userData.value = data
-        
-    }
 
     return { 
-        signin, 
         signup, 
-        getUserInfo, 
+        login,
+        logout, 
         errors, 
-        isAuth,
-        userData
+        isAuth
     }
 })

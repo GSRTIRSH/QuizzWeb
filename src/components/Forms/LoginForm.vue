@@ -5,11 +5,9 @@ import { useAuthStore } from '@/store/authStore'
 import { toRefs, watch } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useAsyncState } from '@vueuse/core'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
-const { errors, isAuth } = toRefs(useAuthStore())
-const { signin } = useAuthStore()
+const { errors } = toRefs(useAuthStore())
+const { login } = useAuthStore()
 const toast = useToast()
 
 interface LoginForm {
@@ -31,14 +29,11 @@ const { value: name, errors: loginErrors } = useField<LoginForm['name']>('name')
 const { value: password, errors: passwordErrors } = useField<LoginForm['password']>('password')
 
 const {
-  isLoading: isSigninLoading,
-  execute: signinExecute
-} = useAsyncState((values) => signin(values), null, { immediate: false })
+  isLoading: isLoginLoading,
+  execute: loginExecute
+} = useAsyncState((values) => login(values), null, { immediate: false })
 
-const onSubmit = handleSubmit(async(values) => {
-    await signinExecute(undefined, values)
-    if (isAuth.value) router.push({name: 'Main'})
-})
+const onSubmit = handleSubmit((values) => loginExecute(undefined, values))
 
 
 watch(errors, () => {
@@ -76,7 +71,7 @@ watch(errors, () => {
             <Button 
                 type="submit"
                 class="tw-justify-center tw-text-2xl"
-                :loading="isSigninLoading"
+                :loading="isLoginLoading"
             >
                 <span>log in</span>
             </Button>

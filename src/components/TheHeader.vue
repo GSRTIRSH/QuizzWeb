@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/store/authStore'
+import { useUserStore } from '@/store/userStore';
 import { toRefs } from 'vue'
-const { isAuth, userData } = toRefs(useAuthStore())
+const { isAuth } = toRefs(useAuthStore())
+const { userData } = toRefs(useUserStore())
 </script>
 
 <template>
@@ -16,7 +18,7 @@ const { isAuth, userData } = toRefs(useAuthStore())
             <div class="tw-flex">
                 <Button 
                     v-if="isAuth"
-                    v-tooltip.bottom="'Your profile'" 
+                    v-tooltip.left="'Your profile'" 
                     @click="$router.push({name: 'Personal'})"
                     outlined 
                     class="tw-p-0" 

@@ -19,6 +19,7 @@ import Toast from 'primevue/toast'
 import ToastService from 'primevue/toastservice'
 import Tooltip from 'primevue/tooltip'
 import Textarea from 'primevue/textarea'
+import FileUpload from 'primevue/fileupload'
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -33,6 +34,7 @@ app.component('Chip', Chip)
 app.component('InlineMessage', InlineMessage)
 app.component('Toast', Toast)
 app.component('Textarea', Textarea)
+app.component('FileUpload', FileUpload)
 
 app.directive('tooltip', Tooltip)
 
