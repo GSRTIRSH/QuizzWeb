@@ -11,7 +11,7 @@ const { uploadAvatar } = useUserStore()
 </script>
 
 <template>
-    <div class="tw-mt-16 tw-max-w-6xl tw-mx-auto tw-px-4">
+    <div class="tw-mt-16 tw-max-w-6xl tw-mx-auto tw-px-4 tw-w-full">
         <div 
             class="
                 tw-grid
@@ -29,6 +29,7 @@ const { uploadAvatar } = useUserStore()
         >
             <Card 
                 class="
+                    tw-min-w-full
                     tw-bg-secondary-background 
                     sm:tw-row-start-2 
                     sm:tw-row-end-4

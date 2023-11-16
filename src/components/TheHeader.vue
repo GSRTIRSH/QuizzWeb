@@ -3,7 +3,7 @@ import { useAuthStore } from '@/store/authStore'
 import { useUserStore } from '@/store/userStore';
 import { toRefs } from 'vue'
 const { isAuth } = toRefs(useAuthStore())
-const { userData } = toRefs(useUserStore())
+const { userData, avatar } = toRefs(useUserStore())
 </script>
 
 <template>
@@ -23,7 +23,12 @@ const { userData } = toRefs(useUserStore())
                     outlined 
                     class="tw-p-0" 
                 >
-                    <Avatar :label="userData?.userName[0]" class="mr-2" size="large" />
+                    <Avatar 
+                        :image="avatar" 
+                        :label="!avatar ? userData?.userName[0] : undefined" 
+                        size="large"
+                        :class="'tw-object-cover'"
+                    />
                 </Button>
                 <Button v-else @click="$router.push({name: 'Auth'})">
                     Log in

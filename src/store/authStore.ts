@@ -7,25 +7,27 @@ import type {
 } from '@/types/auth'
 import { checkTokenValidityRequest, loginRequest, regRequest } from '@/api/authRequests'
 import { defineStore } from 'pinia'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, toRefs } from 'vue'
 import { useUserStore } from '../store/userStore'
 import { useRouter } from 'vue-router'
 
 
 export const useAuthStore = defineStore('authStore', () => {
     const router = useRouter()
-    const { getUserInfo } = useUserStore()
+    const { getUserInfo, getAvatar } = useUserStore()
+    const { avatar, userData } = toRefs(useUserStore())
     
     const errors = ref([''])
     const isAuth = ref(false)
 
-    onBeforeMount(() => {
+    onBeforeMount(async() => {
         const token = localStorage.getItem('token')
         const id = localStorage.getItem('id')
         if (token && id) {
             checkTokenValidityRequest(token).then((isTokenValidity) => isAuth.value = isTokenValidity)
 
-            getUserInfo(id)
+            await getUserInfo(id)
+            await getAvatar()
         }
       });
 
@@ -38,7 +40,8 @@ export const useAuthStore = defineStore('authStore', () => {
             localStorage.setItem('token', successData.token)
             localStorage.setItem('id', successData.id)
 
-            getUserInfo(successData.id)
+            await getUserInfo(successData.id)
+            await getAvatar()
 
             router.push({name: 'Main'})
         } else {
@@ -49,6 +52,7 @@ export const useAuthStore = defineStore('authStore', () => {
 
     const logout = () => {
         isAuth.value = false
+        avatar.value = null
         localStorage.removeItem('token')
         localStorage.removeItem('id')
         router.push({name: 'Main'})

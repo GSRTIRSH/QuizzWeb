@@ -25,17 +25,14 @@ export const useUserStore = defineStore('userStore', () => {
         formData.append('file', file);
 
         isAvatarUploadet.value = await uploadAvatarRequest(formData, userData.value?.id!, token!)
-        if(isAvatarUploadet.value) {
-            await getAvatar()
-        }
+        await getAvatar()
     }
 
     const getAvatar = async () => {
         const token = localStorage.getItem('token')
-        const response = await getAvatarRequest(userData.value?.id!, token!)
-        const imageUrl = await response.blob()
-        avatar.value = URL.createObjectURL(imageUrl)
-        console.log(avatar.value)
+
+        const res = await getAvatarRequest(userData.value?.id!, token!) 
+        avatar.value =  URL.createObjectURL(await res.blob())
     }
 
     return { 
