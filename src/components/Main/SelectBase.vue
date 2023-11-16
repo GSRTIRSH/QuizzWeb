@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import QuizCard from '@/components/QuizCard.vue';
+import QuizCard from '@/components/Main/QuizCard.vue';
 import img_js from '@/assets/images/JavaScriptLogo.png';
 import img_html5 from '@/assets/images/HtmlLogo.png';
 import img_php from '@/assets/images/PHPLogo.jpg';

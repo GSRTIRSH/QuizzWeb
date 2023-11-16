@@ -1,9 +1,9 @@
 <template>
-    <QuizWelcome/>
-    <QuizSelectBase/>
+    <Welcome/>
+    <SelectBase/>
 </template>
 
 <script setup lang="ts">
-import QuizWelcome from '@/components/Sections/QuizWelcome.vue';
-import QuizSelectBase from '@/components/Sections/QuizSelectBase.vue';
+import Welcome from '@/components/Main/Welcome.vue';
+import SelectBase from '@/components/Main/SelectBase.vue';
 </script>

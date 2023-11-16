@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import AccountDetailsForm from '@/components/Forms/AccountDetailsForm.vue'
-import AdditionalInfoForm from '@/components/Forms/AdditionalInfoForm.vue'
+import AccountDetailsForm from '@/components/Personal/AccountDetailsForm.vue'
+import AdditionalInfoForm from '@/components/Personal/AdditionalInfoForm.vue'
 import { useAuthStore } from '@/store/authStore'
 import { useUserStore } from '@/store/userStore'
 import { toRefs } from 'vue'
@@ -41,7 +41,7 @@ const { uploadAvatar } = useUserStore()
                 <template #header>
                     <img
                         :src="avatar"
-                        class="tw-h-56 tw-w-full tw-object-cover tw-p-3"
+                        class="tw-h-60 tw-w-full tw-object-cover tw-p-3"
                     />
                 </template>
                 <template #title>

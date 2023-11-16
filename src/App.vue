@@ -1,19 +1,16 @@
 <template>
     <div class="app tw-bg-base-background tw-relative">
-        <TheHeader/>
+        <Header/>
         <router-view/>
-        <TheFooter v-if="!route.path.includes('/quiz')" />
-        <QuizParticleSystem class="tw-z-[-10]"/>
+        <Footer/>
+        <ParticleSystem class="tw-z-[-10]"/>
     </div>
 </template>
 
 <script setup lang="ts">
-import TheHeader from '@/components/TheHeader.vue'
-import TheFooter from '@/components/TheFooter.vue'
-import QuizParticleSystem from './components/QuizParticleSystem.vue';
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
+import Header from '@/components/General/Header.vue'
+import Footer from '@/components/General/Footer.vue'
+import ParticleSystem from './components/General/ParticleSystem.vue';
 </script>
 
 <style scoped>

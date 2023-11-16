@@ -53,8 +53,10 @@ export const useAuthStore = defineStore('authStore', () => {
     const logout = () => {
         isAuth.value = false
         avatar.value = null
+
         localStorage.removeItem('token')
         localStorage.removeItem('id')
+        
         router.push({name: 'Main'})
     }
 
