@@ -3,16 +3,19 @@ import AccountDetailsForm from '@/components/Personal/AccountDetailsForm.vue'
 import FriendsPanel from '@/components/Personal/FriendsPanel.vue'
 import StatisticsPanel from '@/components/Personal/StatisticsPanel.vue'
 import PersonalCard from '@/components/Personal/PersonalCard.vue'
+import Constructor from '@/components/Personal/Constuctor.vue'
 import { useAuthStore } from '@/store/authStore'
 import { useUserStore } from '@/store/userStore'
-import { toRefs } from 'vue'
+import { ref, toRefs } from 'vue'
 
 const { logout } = useAuthStore()
 const { userData, avatar } = toRefs(useUserStore())
 const { uploadAvatar } = useUserStore()
+const ConstructorRef = ref();
 </script>
 
 <template>
+    <Constructor ref="ConstructorRef"/>
     <div class="tw-mt-16 tw-max-w-6xl tw-mx-auto tw-px-4 tw-w-full">
         <div
             class="
@@ -55,7 +58,7 @@ const { uploadAvatar } = useUserStore()
                     tw-min-w-full
                 "
             >
-                <Button class="tw-w-full tw-justify-center">Create quiz</Button>
+                <Button @click="ConstructorRef?.openDialog()" class="tw-w-full tw-justify-center">Create quiz</Button>
             </div>
             <StatisticsPanel 
                 class="

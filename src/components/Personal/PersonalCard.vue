@@ -13,12 +13,12 @@ const props = defineProps({
 <template>
     <div class="tw-w-full tw-bg-secondary-background tw-p-4 tw-rounded-sm base-shadow tw-flex tw-flex-col tw-flex-grow">
             <div class="tw-grow tw-aspect-square tw-mb-4">
-                <img class="tw-object-cover tw-rounded-sm" v-if="props.avatar" :src="props.avatar" />
+                <img class="tw-object-cover tw-h-full tw-rounded-sm" v-if="props.avatar" :src="props.avatar" />
                 <Skeleton v-else size="100%"/>
             </div>
-            <div v-if="props.userName" class="tw-mb-2 tw-font-base-text tw-font-bold tw-text-2xl">{{ props.userName }}</div>
+            <div v-if="props.userName" class="tw-mb-2 tw-font-base-title tw-font-bold tw-text-2xl">{{ props.userName }}</div>
             <Skeleton v-else width="100%" height="1.5rem" class="tw-mb-2"/>
-            <div v-if="props.email" class="tw-mb-4 tw-font-base-text tw-text-md">{{ props.email }}</div>
+            <div v-if="props.email" class="tw-mb-4 tw-text-lg tw-text-md">{{ props.email }}</div>
             <Skeleton v-else width="100%" height="1.5rem" class="tw-mb-4"/>
             <FileUpload
                 customUpload

@@ -61,7 +61,7 @@ const selectedAnswers = ref([]);
                             @click="addAnswer(questionIndex, answerIndex)"
                             v-show="answer"
                             :outlined="answerIndex === selectedAnswers[questionIndex] ? false : true"
-                            class="tw-font-base-text tw-justify-center tw-text-xl"
+                            class="tw-font-base-title tw-justify-center tw-text-xl"
                             :class="{
                                 'quiz__answer-active':
                                     answerIndex ===

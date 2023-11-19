@@ -210,6 +210,7 @@
     background: $actionIconBg;
     border-radius: $actionIconBorderRadius;
     transition: $actionIconTransition;
+    color: $base-yellow;
 
     @if $enabled {
         &:enabled:hover {
@@ -227,7 +228,7 @@
 }
 
 @mixin action-icon-hover() {
-    color: $actionIconHoverColor;
+    color: $base-yellow;
     border-color: $actionIconHoverBorderColor;
     background: $actionIconHoverBg;
 }

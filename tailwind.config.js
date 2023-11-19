@@ -1,5 +1,4 @@
 export default {
-  // important: true,
   prefix: 'tw-',
   content: [
     "./index.html",
@@ -15,7 +14,7 @@ export default {
       },
       fontFamily: {
         'base-ui': ['Visitor Rus', 'sans'],
-        'base-text': ['Disket Mono', 'sans']
+        'base-title': ['Disket Mono', 'sans']
       },
     },
     screens: {

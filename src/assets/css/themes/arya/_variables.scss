@@ -54,23 +54,23 @@ $focusOutlineOffset:0 !default;
 $focusShadow:0 0 0 1px $focusOutlineColor !default;
 
 //action icons
-$actionIconWidth: 2rem !default;
-$actionIconHeight: 2rem !default;
+$actionIconWidth: 2.5rem !default;
+$actionIconHeight: 2.5rem !default;
 $actionIconBg: transparent !default;
-$actionIconBorder: 0 none !default;
+$actionIconBorder: 1px solid $base-yellow !default;
 $actionIconColor: $shade100 !default;
 $actionIconHoverBg: $hoverBg !default;
-$actionIconHoverBorderColor: transparent !default;
+$actionIconHoverBorderColor: $base-yellow !default;
 $actionIconHoverColor: $shade000 !default;
-$actionIconBorderRadius: 50% !default;
+$actionIconBorderRadius: 0.1rem !default;
 
 //input field (e.g. inputtext, spinner, inputmask)
 $inputPadding:.5rem .5rem !default;
 $inputTextFontSize:1rem !default;
-$inputBg:$shade900 !default;
+$inputBg: $secondary-background !default;
 $inputTextColor:$shade000 !default;
 $inputIconColor:$shade100 !default;
-$inputBorder:1px solid $shade600 !default;
+$inputBorder:1px solid $base-yellow !default;
 $inputHoverBorderColor:$primaryColor !default;
 $inputFocusBorderColor:$primaryColor !default;
 $inputErrorBorderColor:$errorColor !default;
@@ -354,7 +354,7 @@ $panelHeaderTextHoverColor:$shade000 !default;
 
 $panelContentBorderColor: $shade600 !default;
 $panelContentBorder:1px solid $shade600 !default;
-$panelContentBg:$shade800 !default;
+$panelContentBg: $secondary-background !default;
 $panelContentEvenRowBg:rgba(255,255,255,0.01) !default;
 $panelContentTextColor:$shade000 !default;
 $panelContentPadding:1rem !default;
@@ -598,7 +598,7 @@ $overlayContentBg:$panelContentBg !default;
 $overlayContainerShadow:0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0,0,0,.12) !default;
 
 //dialog
-$dialogHeaderBg:$shade800 !default;
+$dialogHeaderBg:$secondary-background !default;
 $dialogHeaderBorder:0 none !default;
 $dialogHeaderTextColor:$shade000 !default;
 $dialogHeaderFontWeight:600 !default;
@@ -783,11 +783,11 @@ $chipFocusTextColor:$textColor !default;
 //scrollTop
 $scrollTopBg:$highlightBg !default;
 $scrollTopHoverBg:scale-color($highlightBg, $alpha: 24%) !default;
-$scrollTopWidth:3rem !default;
-$scrollTopHeight:3rem !default;
-$scrollTopBorderRadius:50% !default;
+$scrollTopWidth:2.5rem !default;
+$scrollTopHeight:2.5rem !default;
+$scrollTopBorderRadius:0.1rem !default;
 $scrollTopFontSize:1.5rem !default;
-$scrollTopTextColor:$highlightTextColor !default;
+$scrollTopTextColor:$base-yellow !default;
 
 //skeleton
 $skeletonBg:rgba(255,255,255,.06) !default;

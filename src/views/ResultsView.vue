@@ -216,7 +216,7 @@ const myArray = [1, 2, 3, 4, 5];
             bottom: 6px;
             margin: 0px 12px 0px 12px;
             color: $base-yellow;
-            font-family: $base-text-font;
+            font-family: $base-title-font;
             font-size: 15px;
             font-style: normal;
             font-weight: 700;

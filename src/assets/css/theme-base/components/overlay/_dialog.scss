@@ -14,15 +14,17 @@
         .p-dialog-title {
             font-weight: $dialogHeaderFontWeight;
             font-size: $dialogHeaderFontSize;
+            font-family: $base-title-font;
+            color: $base-yellow;
         }
 
         .p-dialog-header-icon {
             @include action-icon();
             margin-right: $inlineSpacing;
-            
+
             &:last-child {
                 margin-right: 0;
-            }            
+            }
         }
     }
 
@@ -30,15 +32,23 @@
         background: $overlayContentBg;
         color: $panelContentTextColor;
         padding: $dialogContentPadding;
-
         &:last-of-type {
             border-bottom-right-radius: $borderRadius;
             border-bottom-left-radius: $borderRadius;
         }
     }
 
+    .p-dialog-content::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .p-dialog-content::-webkit-scrollbar-thumb {
+        background-color: $base-yellow;
+        border-radius: 2px;
+    }
+
     .p-dialog-footer {
-        border-top:  $dialogFooterBorder;
+        border-top: $dialogFooterBorder;
         background: $overlayContentBg;
         color: $panelFooterTextColor;
         padding: $dialogFooterPadding;

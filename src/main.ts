@@ -21,7 +21,10 @@ import Tooltip from 'primevue/tooltip'
 import Textarea from 'primevue/textarea'
 import FileUpload from 'primevue/fileupload'
 import Image from 'primevue/image'
-import Skeleton from 'primevue/skeleton';
+import Skeleton from 'primevue/skeleton'
+import ScrollTop from 'primevue/scrolltop'
+import Checkbox from 'primevue/checkbox';
+
 
 const pinia = createPinia()
 const app = createApp(App)
@@ -39,6 +42,7 @@ app.component('Textarea', Textarea)
 app.component('FileUpload', FileUpload)
 app.component('Image', Image)
 app.component('Skeleton', Skeleton)
+app.component('ScrollTop', ScrollTop)
 
 app.directive('tooltip', Tooltip)
 

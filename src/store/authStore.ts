@@ -41,9 +41,10 @@ export const useAuthStore = defineStore('authStore', () => {
             localStorage.setItem('id', successData.id)
 
             await getUserInfo(successData.id)
+            router.push({name: 'Main'})
+
             await getAvatar()
 
-            router.push({name: 'Main'})
         } else {
             const errorData: authResponseError = data as authResponseError;
             errors.value = errorData.errors

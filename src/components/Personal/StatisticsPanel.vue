@@ -17,8 +17,8 @@
             <div class="tw-flex sm:tw-justify-center tw-gap-6">
                 <img src="@/assets/images/heart.png" class="tw-w-10 tw-object-contain" />
                 <div class="">
-                    <div class="tw-font-base-text tw-text-xl">0</div>
-                    <div class="tw-font-base-text tw-text-[0.7rem]">Rating</div>
+                    <div class="tw-font-base-title tw-text-xl">0</div>
+                    <div class="tw-font-base-title tw-text-[0.7rem]">Rating</div>
                 </div>
             </div>
         </div>
@@ -27,8 +27,8 @@
             <div class="tw-flex sm:tw-justify-center tw-gap-6">
                 <img src="@/assets/images/graduation-cap.png" class="tw-w-10 tw-object-contain" />
                 <div class="">
-                    <div class="tw-font-base-text tw-text-xl">0</div>
-                    <div class="tw-font-base-text tw-text-[0.7rem]">Tests passed</div>
+                    <div class="tw-font-base-title tw-text-xl">0</div>
+                    <div class="tw-font-base-title tw-text-[0.7rem]">Tests passed</div>
                 </div>
             </div>
         </div>
@@ -37,8 +37,8 @@
             <div class="tw-flex sm:tw-justify-center tw-gap-6">
                 <img src="@/assets/images/trophy.png" class="tw-w-10 tw-object-contain" />
                 <div class="">
-                    <div class="tw-font-base-text tw-text-xl">0</div>
-                    <div class="tw-font-base-text tw-text-[0.7rem]">Tests created</div>
+                    <div class="tw-font-base-title tw-text-xl">0</div>
+                    <div class="tw-font-base-title tw-text-[0.7rem]">Tests created</div>
                 </div>
             </div>
         </div>

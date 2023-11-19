@@ -4,6 +4,7 @@
         <router-view/>
         <Footer/>
         <ParticleSystem class="tw-z-[-10]"/>
+        <ScrollTop/>
     </div>
 </template>
 
