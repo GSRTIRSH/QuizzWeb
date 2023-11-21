@@ -54,8 +54,8 @@ $focusOutlineOffset:0 !default;
 $focusShadow:0 0 0 1px $focusOutlineColor !default;
 
 //action icons
-$actionIconWidth: 2.5rem !default;
-$actionIconHeight: 2.5rem !default;
+$actionIconWidth: 2.575rem !default;
+$actionIconHeight: 2.575rem !default;
 $actionIconBg: transparent !default;
 $actionIconBorder: 1px solid $base-yellow !default;
 $actionIconColor: $shade100 !default;
@@ -136,7 +136,7 @@ $roundedButtonBorderRadius:2rem !default;
 
 $textButtonHoverBgOpacity:.04 !default;
 $textButtonActiveBgOpacity:.16 !default;
-$outlinedButtonBorder:1px solid !default;
+$outlinedButtonBorder:1px solid $base-yellow !default;
 $plainButtonTextColor:$textSecondaryColor !default;
 $plainButtonHoverBgColor:$hoverBg !default;
 $plainButtonActiveBgColor:rgba(255,255,255,.16) !default;
