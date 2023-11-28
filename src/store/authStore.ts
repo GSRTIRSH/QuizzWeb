@@ -10,6 +10,7 @@ import { defineStore } from 'pinia'
 import { ref, onBeforeMount, toRefs } from 'vue'
 import { useUserStore } from '../store/userStore'
 import { useRouter } from 'vue-router'
+import Cookies from 'js-cookie'
 
 
 export const useAuthStore = defineStore('authStore', () => {
@@ -21,8 +22,8 @@ export const useAuthStore = defineStore('authStore', () => {
     const isAuth = ref(false)
 
     onBeforeMount(async() => {
-        const token = localStorage.getItem('token')
-        const id = localStorage.getItem('id')
+        const token = Cookies.get('token')
+        const id = Cookies.get('id')
         if (token && id) {
             checkTokenValidityRequest(token).then((isTokenValidity) => isAuth.value = isTokenValidity)
 
@@ -37,8 +38,8 @@ export const useAuthStore = defineStore('authStore', () => {
             const successData: authResponseSuccess = data as authResponseSuccess
             isAuth.value = successData.result
 
-            localStorage.setItem('token', successData.token)
-            localStorage.setItem('id', successData.id)
+            Cookies.set('token', successData.token, { expires: 7 })
+            Cookies.set('id', successData.id, { expires: 7 })
 
             await getUserInfo(successData.id)
             router.push({name: 'Main'})
@@ -55,8 +56,8 @@ export const useAuthStore = defineStore('authStore', () => {
         isAuth.value = false
         avatar.value = null
 
-        localStorage.removeItem('token')
-        localStorage.removeItem('id')
+        Cookies.remove('token')
+        Cookies.remove('id')
         
         router.push({name: 'Main'})
     }
@@ -67,8 +68,8 @@ export const useAuthStore = defineStore('authStore', () => {
             const successData: authResponseSuccess = data as authResponseSuccess;
             isAuth.value = successData.result
 
-            localStorage.setItem('token', successData.token)
-            localStorage.setItem('id', successData.id)
+            Cookies.set('token', successData.token, { expires: 7 }) // где expires - срок жизни cookie в днях
+            Cookies.set('id', successData.id, { expires: 7 })
             
             getUserInfo(successData.id)
 

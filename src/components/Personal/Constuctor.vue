@@ -20,7 +20,6 @@ interface Quiz {
 }
 
 const dialogVisible = ref(false)
-const coverImage = ref('')
 
 const quiz = ref<Quiz>({
     name: '',
@@ -55,7 +54,7 @@ const clearQuiz = () => {
 const coverSelect = (event: FileUploadUploaderEvent) => {
     const files = event.files
     const file = (Array.isArray(files) ? files[0] : files)
-    if (file) coverImage.value = URL.createObjectURL(file)
+    if (file) quiz.value.cover = URL.createObjectURL(file)
 }
 
 const correctAnswerSelect = (qIndex: number, aIndex: number) => {
@@ -109,9 +108,11 @@ defineExpose({
                     class="tw-mt-[27.5px] tw-p-2 tw-gap-2 tw-max-h-min tw-border-base-yellow tw-border-[1px] tw-rounded-sm tw-flex tw-flex-col tw-flex-grow tw-row-start-1 tw-row-end-3 tw-col-start-2 tw-col-end-3"
                 >
                     <img
+                        v-if="quiz.cover"
                         class="tw-grow tw-h-full tw-rounded-sm tw-object-cover tw-aspect-square"
-                        :src="coverImage"
+                        :src="quiz.cover"
                     />
+                    <div class="tw-grow tw-h-full tw-rounded-sm tw-object-cover tw-aspect-square" v-else></div>
                     <FileUpload
                         customUpload
                         chooseLabel="upload cover"

@@ -1,54 +1,3 @@
-<template>
-    <Dialog
-        modal
-        v-model:visible="cardDialogVisible"
-        :closable="true"
-        :draggable="false"
-        :style="{
-            'max-width': '496px',
-            width: '100%',
-        }"
-    >
-        <template #container>
-            <Card
-                class="tw-w-full tw-h-full"
-                @click="cardDialogVisible = false"
-            >
-                <template #header>
-                    <div class="tw-relative">
-                        <img
-                            src="/src/assets/images/DevOpsLogo.png"
-                            class="tw-h-56 tw-w-full tw-object-cover tw-p-3"
-                        />
-                        <Chip
-                            class="tw-absolute tw-bottom-[-4px] tw-left-5"
-                            label="Xuxue Feng"
-                            image="/src/assets/images/DevOpsLogo.png"
-                        />
-                    </div>
-                </template>
-                <template #title>
-                    <div>title</div>
-                </template>
-            </Card>
-        </template>
-    </Dialog>
-    <div class="tw-max-w-6xl tw-mx-auto tw-px-4">
-        <div
-            id="scrollPoint"
-            class="tw-justify-items-center tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-y-10 tw-gap-x-8 tw-mb-10"
-        >
-            <QuizCard
-                class="tw-transition-transform hover:tw-scale-[1.04]"
-                v-for="(card, index) in baseCards"
-                :key="index"
-                :card="card"
-                @selectedСard="handleSelectedСard"
-            />
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import QuizCard from '@/components/Main/QuizCard.vue';
 import img_js from '@/assets/images/JavaScriptLogo.png';
@@ -68,12 +17,7 @@ const cardDialogVisible = ref(false);
 
 const handleSelectedСard = (data: string) => {
     cardDialogVisible.value = true;
-
-    // router.push({
-    //     name: 'Quiz',
-    //     params: { topic: data[0] }
-    // });
-};
+}
 
 const baseCards = [
     {
@@ -141,3 +85,54 @@ const baseCards = [
     },
 ];
 </script>
+
+<template>
+    <Dialog
+        modal
+        v-model:visible="cardDialogVisible"
+        :closable="true"
+        :draggable="false"
+        :style="{
+            'max-width': '496px',
+            width: '100%',
+        }"
+    >
+        <template #container>
+            <Card
+                class="tw-w-full tw-h-full"
+                @click="cardDialogVisible = false"
+            >
+                <template #header>
+                    <div class="tw-relative">
+                        <img
+                            src="/src/assets/images/DevOpsLogo.png"
+                            class="tw-h-56 tw-w-full tw-object-cover tw-p-3"
+                        />
+                        <Chip
+                            class="tw-absolute tw-bottom-[-4px] tw-left-5"
+                            label="Xuxue Feng"
+                            image="/src/assets/images/DevOpsLogo.png"
+                        />
+                    </div>
+                </template>
+                <template #title>
+                    <div>title</div>
+                </template>
+            </Card>
+        </template>
+    </Dialog>
+    <div class="tw-max-w-6xl tw-mx-auto tw-px-4">
+        <div
+            id="scrollPoint"
+            class="tw-justify-items-center tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-y-10 tw-gap-x-8 tw-mb-10"
+        >
+            <QuizCard
+                class="tw-transition-transform hover:tw-scale-[1.04]"
+                v-for="(card, index) in baseCards"
+                :key="index"
+                :card="card"
+                @selectedСard="handleSelectedСard"
+            />
+        </div>
+    </div>
+</template>

@@ -11,7 +11,8 @@ import { ref, toRefs } from 'vue'
 const { logout } = useAuthStore()
 const { userData, avatar } = toRefs(useUserStore())
 const { uploadAvatar } = useUserStore()
-const ConstructorRef = ref();
+const ConstructorRef = ref()
+
 </script>
 
 <template>

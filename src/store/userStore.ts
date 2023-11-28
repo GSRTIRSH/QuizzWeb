@@ -3,6 +3,7 @@ import { getAvatarRequest, getUserInfoRequest, uploadAvatarRequest } from '@/api
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { FileUploadUploaderEvent } from 'primevue/fileupload'
+import Cookies from 'js-cookie'
 
 export const useUserStore = defineStore('userStore', () => {
     const userData = ref<getUserResponse>()
@@ -10,14 +11,14 @@ export const useUserStore = defineStore('userStore', () => {
     const avatar = ref<any>()
 
     const getUserInfo = async (id: string) => {
-        const token = localStorage.getItem('token')
+        const token = Cookies.get('token')
 
         const data = await getUserInfoRequest(id, token!)
         userData.value = data
     }
 
     const uploadAvatar = async (event: FileUploadUploaderEvent) => {
-        const token = localStorage.getItem('token')
+        const token = Cookies.get('token')
 
         const files = event.files
         const file = (Array.isArray(files) ? files[0] : files);
@@ -29,7 +30,7 @@ export const useUserStore = defineStore('userStore', () => {
     }
 
     const getAvatar = async () => {
-        const token = localStorage.getItem('token')
+        const token = Cookies.get('token')
 
         const res = await getAvatarRequest(userData.value?.id!, token!) 
         avatar.value =  URL.createObjectURL(await res.blob())

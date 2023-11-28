@@ -1,9 +1,9 @@
 <template>
     <Welcome/>
-    <SelectBase/>
+    <Select/>
 </template>
 
 <script setup lang="ts">
 import Welcome from '@/components/Main/Welcome.vue';
-import SelectBase from '@/components/Main/SelectBase.vue';
+import Select from '@/components/Main/Select.vue';
 </script>
