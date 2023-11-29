@@ -34,6 +34,7 @@ export const useAuthStore = defineStore('authStore', () => {
 
     const login = async (credentials: loginArgs) => {
         const data: authResponse = await loginRequest(credentials)
+        console.log(data)
         if (data.result) {
             const successData: authResponseSuccess = data as authResponseSuccess
             isAuth.value = successData.result
@@ -68,7 +69,7 @@ export const useAuthStore = defineStore('authStore', () => {
             const successData: authResponseSuccess = data as authResponseSuccess;
             isAuth.value = successData.result
 
-            Cookies.set('token', successData.token, { expires: 7 }) // где expires - срок жизни cookie в днях
+            Cookies.set('token', successData.token, { expires: 7 })
             Cookies.set('id', successData.id, { expires: 7 })
             
             getUserInfo(successData.id)

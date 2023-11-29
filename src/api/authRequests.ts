@@ -6,12 +6,10 @@ import { config } from '@/config'
 
 export const checkTokenValidityRequest = async (token: string): Promise<boolean> => {
     try {
-        const response = await fetch(`${config.API_URL}/v2/Auth/token`, {
+        const response = await fetch(`${config.BASE_URL}/v2/Auth/token`, {
             method: 'GET',
             headers: {
-                'x-api-key': config.TOKEN,
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`
             }
         });
 
@@ -28,10 +26,9 @@ export const checkTokenValidityRequest = async (token: string): Promise<boolean>
 
 export const loginRequest = async (credentials: loginArgs) => {
     try {
-        const result = await fetch(`${config.API_URL}/v2/Auth/login`, {
+        const result = await fetch(`${config.BASE_URL}/api/User/login`, {
             method: 'POST',
             headers: {
-                'x-api-key': config.TOKEN,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(credentials)
@@ -45,10 +42,9 @@ export const loginRequest = async (credentials: loginArgs) => {
 
 export const regRequest = async (credentials: signupArgs) => {
     try {
-        const result = await fetch(`${config.API_URL}/v2/Auth/Register`, {
+        const result = await fetch(`${config.BASE_URL}/api/User/register`, {
             method: 'POST',
             headers: {
-                'x-api-key': config.TOKEN,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(credentials)

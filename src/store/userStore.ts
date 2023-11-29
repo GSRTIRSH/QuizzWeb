@@ -11,9 +11,7 @@ export const useUserStore = defineStore('userStore', () => {
     const avatar = ref<any>()
 
     const getUserInfo = async (id: string) => {
-        const token = Cookies.get('token')
-
-        const data = await getUserInfoRequest(id, token!)
+        const data = await getUserInfoRequest(id)
         userData.value = data
     }
 

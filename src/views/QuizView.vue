@@ -4,7 +4,7 @@
 import 'swiper/scss';
 import 'swiper/scss/pagination';
 // import QuizLoader from '@/components/QuizLoader.vue';
-import { getListOfQuizzes } from '@/api/getListOfQuizzes';
+// import { getListOfQuizzes } from '@/api/getListOfQuizzes';
 import { useAsyncState } from '@vueuse/core';
 import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -12,7 +12,7 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 
-const { state: quizState, isLoading: isQuizLoading } = useAsyncState<any>(getListOfQuizzes(route.params.topic, route.params.difficulty), []);
+// const { state: quizState, isLoading: isQuizLoading } = useAsyncState<any>(getListOfQuizzes(route.params.topic, route.params.difficulty), []);
 
 const QuizSwiper = ref();
 const currentSlideIndex = ref(0);

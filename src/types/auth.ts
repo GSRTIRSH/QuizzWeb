@@ -12,7 +12,7 @@ export interface authResponseError extends authResponse {
 }
 
 export interface loginArgs {
-    name: string
+    email: string
     password: string
 }
 

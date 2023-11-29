@@ -11,21 +11,21 @@ const { login } = useAuthStore()
 const toast = useToast()
 
 interface LoginForm {
-    name: string
+    email: string
     password: string
 }
 
 const emit = defineEmits()
 
 const loginSchema: Yup.ObjectSchema<LoginForm> = Yup.object({
-    name: Yup.string().required(),
+    email: Yup.string().required(),
     password: Yup.string().min(6).required()
 })
 
 const { handleSubmit } = useForm<LoginForm>({
     validationSchema: loginSchema
 })
-const { value: name, errors: loginErrors } = useField<LoginForm['name']>('name')
+const { value: email, errors: emailErrors } = useField<LoginForm['email']>('email')
 const { value: password, errors: passwordErrors } = useField<LoginForm['password']>('password')
 
 const {
@@ -50,13 +50,13 @@ watch(errors, () => {
     >
         <div class="tw-flex tw-flex-col tw-self-center tw-w-full tw-max-w-sm tw-gap-2">
             <InputText
-                v-model="name"
+                v-model="email"
                 size="large"
-                name="login"
-                autocomplete="login"
-                id="login"
-                placeholder="Login"
-                :class="{ 'p-invalid': loginErrors.length }"
+                name="email"
+                id="email"
+                autocomplete="email"
+                placeholder="Email"
+                :class="{ 'p-invalid': emailErrors.length }"
             />
             <InputText
                 v-model="password"

@@ -1,20 +1,19 @@
 import type { getUserResponse } from '@/types/user'
 import { config } from '@/config'
 
-export const getUserInfoRequest = async (id: string, token: string): Promise<getUserResponse> => {
+export const getUserInfoRequest = async (id: string): Promise<getUserResponse> => {
     try {
         const result = await fetch(
-            `${config.API_URL}/v2/Auth/${id}`,
+            `${config.BASE_URL}/api/User/${id}/get`,
             {
                 method: 'GET',
                 headers: {
-                    'x-api-key': config.TOKEN,
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                }
+                },
+                credentials: 'include'
             }
         );
-        return await result.json();
+        return await result.json()
     } catch (error) {
         console.error('Error in getUserInfoRequest:', error);
         throw error;
