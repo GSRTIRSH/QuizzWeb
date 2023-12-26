@@ -3,10 +3,10 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
-COPY /. ./
+COPY /. src/
+WORKDIR "/src"
 RUN dotnet restore "EmailService.csproj"
 #COPY . .
-#WORKDIR "/src/EmailService"
 RUN dotnet build "EmailService.csproj" -c Release -o /app/build
 
 FROM build AS publish
