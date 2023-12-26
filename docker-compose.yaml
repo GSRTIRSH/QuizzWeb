@@ -26,7 +26,7 @@ services:
 
   api:
     container_name: quizzapi
-    build: .
+    build: QuizzWebApi/.
     ports:
       - "5200:80"
     environment:
@@ -39,6 +39,14 @@ services:
     networks:
       - net
 
+#  email:
+#    container_name: email
+#    build: EmailService/.
+#    ports:
+#      - "5120:80"
+#    networks:
+#      - net
+
   api.seq:
     image: datalust/seq:latest
     container_name: api-seq
@@ -49,6 +57,18 @@ services:
       - "8081:80"
     networks:
       - net
+  
+#  rabbitmq:
+#    image: rabbitmq:3.10.7-management
+#    hostname: rabbitmq
+#    restart: always
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=rmuser
+#      - RABBITMQ_DEFAULT_PASS=rmpassword
+#    ports:
+#      - "15672:15672"
+#    networks:
+#      - net
 
 volumes:
   pgdata: { }
